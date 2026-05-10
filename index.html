@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CollectPro — Field Collection App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #111827;
+    --bg3: #1a2235;
+    --card: #161e2e;
+    --border: #1f2d45;
+    --accent: #f59e0b;
+    --accent2: #ef4444;
+    --accent3: #10b981;
+    --text: #f1f5f9;
+    --text2: #94a3b8;
+    --text3: #475569;
+    --overdue: #ef4444;
+    --safe: #10b981;
+    --warn: #f59e0b;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ============ SCREENS ============ */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ============ LOGIN SCREEN ============ */
+  #loginScreen {
+    background: linear-gradient(160deg, #0a0e1a 0%, #0f172a 50%, #1a0a2e 100%);
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #loginScreen::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  #loginScreen::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; right: -100px;
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(239,68,68,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .login-box {
+    width: 100%;
+    max-width: 380px;
+    z-index: 1;
+  }
+
+  .login-logo {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .logo-icon {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, var(--accent), #d97706);
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 32px;
+    box-shadow: 0 0 40px rgba(245,158,11,0.3);
+  }
+
+  .login-logo h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #f59e0b, #fcd34d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .login-logo p {
+    color: var(--text2);
+    font-size: 14px;
+    margin-top: 4px;
+  }
+
+  .login-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+  }
+
+  .pin-label {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text2);
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .pin-dots {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+
+  .pin-dot {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: transparent;
+    transition: all 0.2s;
+  }
+
+  .pin-dot.filled {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.1);
+    box-shadow: 0 0 12px rgba(245,158,11,0.5);
+  }
+
+  .pin-keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .pin-key {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    height: 60px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    font-weight: 600;
+    font-family: 'Syne', sans-serif;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .pin-key:active { transform: scale(0.93); background: var(--accent); color: #000; }
+  .pin-key.del { color: var(--accent2); font-size: 18px; }
+  .pin-key.zero { grid-column: 2; }
+
+  .pin-error {
+    text-align: center;
+    color: var(--overdue);
+    font-size: 13px;
+    margin-top: 12px;
+    min-height: 18px;
+    font-weight: 500;
+  }
+
+  .pin-hint {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 16px;
+  }
+
+  /* ============ DASHBOARD ============ */
+  #dashScreen { background: var(--bg); }
+
+  .topbar {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .topbar-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #f59e0b, #fcd34d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    flex: 1;
+  }
+
+  .topbar-user {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--text2);
+  }
+
+  .logout-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 10px;
+    color: var(--text2);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    gap: 0;
+    padding: 12px 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .stats-bar::-webkit-scrollbar { display: none; }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    min-width: 120px;
+    flex-shrink: 0;
+    margin-right: 10px;
+  }
+
+  .stat-card:last-child { margin-right: 0; }
+
+  .stat-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; }
+  .stat-value { font-size: 19px; font-weight: 700; font-family: 'Syne', sans-serif; margin-top: 3px; }
+  .stat-value.amber { color: var(--accent); }
+  .stat-value.red { color: var(--overdue); }
+  .stat-value.green { color: var(--safe); }
+
+  /* Search section */
+  .search-section {
+    padding: 0 16px 8px;
+  }
+
+  .search-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .search-wrap {
+    position: relative;
+    flex: 1;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    pointer-events: none;
+    color: var(--text3);
+  }
+
+  .search-input {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 12px 12px 38px;
+    color: var(--text);
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text3); }
+
+  .area-select-wrap {
+    position: relative;
+    min-width: 130px;
+  }
+
+  .area-select-wrap .search-icon { left: 10px; font-size: 14px; }
+
+  .area-select {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 10px 12px 32px;
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+  }
+
+  .area-select:focus { border-color: var(--accent); }
+
+  /* Sort pills */
+  .sort-row {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .sort-row::-webkit-scrollbar { display: none; }
+
+  .sort-pill {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: var(--text2);
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .sort-pill.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+    font-weight: 600;
+  }
+
+  /* Results count */
+  .results-info {
+    padding: 8px 16px 6px;
+    font-size: 12px;
+    color: var(--text3);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Party list */
+  .party-list {
+    padding: 0 16px 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .party-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .party-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    border-radius: 4px 0 0 4px;
+    background: var(--safe);
+  }
+
+  .party-card.has-overdue::before { background: var(--overdue); }
+  .party-card.warn-overdue::before { background: var(--warn); }
+
+  .party-card:active { transform: scale(0.98); border-color: var(--accent); }
+
+  .party-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+    padding-right: 60px;
+  }
+
+  .party-area {
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 8px;
+  }
+
+  .party-nums {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .party-num-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .party-num-label {
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 600;
+  }
+
+  .party-num-val {
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'Syne', sans-serif;
+    color: var(--text);
+  }
+
+  .party-num-val.overdue { color: var(--overdue); }
+  .party-num-val.safe { color: var(--safe); }
+
+  .party-chevron {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text3);
+    font-size: 18px;
+  }
+
+  .party-bills-count {
+    position: absolute;
+    right: 36px;
+    top: 14px;
+    background: var(--bg3);
+    border-radius: 20px;
+    padding: 2px 8px;
+    font-size: 11px;
+    color: var(--text2);
+    font-weight: 500;
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--text3);
+  }
+  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-state p { font-size: 15px; }
+  .empty-state small { font-size: 13px; display: block; margin-top: 6px; }
+
+  /* Loading */
+  .loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+
+  .spinner {
+    width: 48px; height: 48px;
+    border: 4px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text {
+    font-size: 14px;
+    color: var(--text2);
+  }
+
+  /* ============ DETAIL SCREEN ============ */
+  #detailScreen { background: var(--bg); }
+
+  .detail-header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 8px;
+    width: fit-content;
+  }
+
+  .detail-party-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .detail-area-tag {
+    display: inline-block;
+    background: var(--bg3);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-top: 4px;
+  }
+
+  .detail-body { padding: 16px; padding-bottom: 80px; }
+
+  /* Address + contact card */
+  .info-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .info-card-title {
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .address-text {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  .mobile-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .mobile-link .call-icon {
+    background: var(--safe);
+    border-radius: 6px;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  /* Summary row */
+  .summary-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .summary-tile {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+  }
+
+  .summary-tile .label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700; }
+  .summary-tile .value { font-size: 22px; font-weight: 800; font-family: 'Syne', sans-serif; margin-top: 4px; color: var(--text); }
+  .summary-tile.overdue-tile { border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.05); }
+  .summary-tile.overdue-tile .value { color: var(--overdue); }
+  .summary-tile.current-tile { border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.05); }
+  .summary-tile.current-tile .value { color: var(--safe); }
+
+  /* Bills section */
+  .bills-section-title {
+    font-size: 13px;
+    color: var(--text2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .bill-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bill-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--safe);
+  }
+
+  .bill-card.overdue::before { background: var(--overdue); }
+  .bill-card.warning::before { background: var(--warn); }
+
+  .bill-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .bill-no {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+  }
+
+  .bill-date {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+
+  .bill-days-badge {
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(16,185,129,0.15);
+    color: var(--safe);
+  }
+
+  .bill-days-badge.overdue {
+    background: rgba(239,68,68,0.15);
+    color: var(--overdue);
+  }
+
+  .bill-days-badge.warning {
+    background: rgba(245,158,11,0.15);
+    color: var(--warn);
+  }
+
+  .bill-amounts {
+    display: flex;
+    gap: 16px;
+  }
+
+  .bill-amt-item { }
+  .bill-amt-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
+  .bill-amt-val { font-size: 15px; font-weight: 700; color: var(--text); font-family: 'Syne', sans-serif; }
+  .bill-amt-val.pending { color: var(--overdue); }
+
+  /* Pill legend */
+  .legend {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+
+  /* Set PIN screen */
+  #setPinScreen {
+    background: linear-gradient(160deg, #0a0e1a 0%, #0f172a 50%, #1a0a2e 100%);
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .set-pin-step {
+    font-size: 13px;
+    color: var(--text3);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .set-pin-step span {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Area config */
+  #areaConfigScreen { background: var(--bg); }
+
+  .area-config-body { padding: 16px; padding-bottom: 80px; }
+
+  .area-config-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+
+  .area-config-subtitle {
+    font-size: 13px;
+    color: var(--text3);
+    margin-bottom: 20px;
+  }
+
+  .area-chips-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .area-chip {
+    background: var(--bg3);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 7px 14px;
+    font-size: 13px;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+
+  .area-chip.selected {
+    background: rgba(245,158,11,0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .save-areas-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent), #d97706);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #000;
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+  }
+
+  /* Bottom nav */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    display: flex;
+    z-index: 99;
+  }
+
+  .nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0 12px;
+    cursor: pointer;
+    font-size: 10px;
+    color: var(--text3);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    gap: 3px;
+  }
+
+  .nav-btn .nav-icon { font-size: 20px; }
+  .nav-btn.active { color: var(--accent); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 14px;
+    color: var(--text);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 999;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Shake animation */
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+  }
+
+  .shake { animation: shake 0.4s ease; }
+
+  /* Skeleton loader */
+  .skeleton {
+    background: linear-gradient(90deg, var(--card) 25%, var(--bg3) 50%, var(--card) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.2s infinite;
+    border-radius: 8px;
+  }
+
+  @keyframes shimmer { to { background-position: -200% 0; } }
+
+  .skeleton-card {
+    height: 90px;
+    margin-bottom: 8px;
+    border-radius: var(--radius);
+  }
+
+  /* Rupee formatting helper */
+  .rupee { font-size: 0.75em; }
+
+  /* Tab selector on detail */
+  .tab-bar {
+    display: flex;
+    background: var(--bg3);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    margin-bottom: 12px;
+    gap: 4px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-radius: 7px;
+    padding: 8px 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .tab-btn.active {
+    background: var(--card);
+    color: var(--text);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+</style>
+</head>
+<body>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text">Loading data...</div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ============ LOGIN SCREEN ============ -->
+<div class="screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="logo-icon">💼</div>
+      <h1>CollectPro</h1>
+      <p>Field Collection Manager</p>
+    </div>
+    <div class="login-card">
+      <div class="pin-label" id="pinLabel">Enter Your 6-Digit PIN</div>
+      <div class="pin-dots" id="pinDots">
+        <div class="pin-dot" id="dot0"></div>
+        <div class="pin-dot" id="dot1"></div>
+        <div class="pin-dot" id="dot2"></div>
+        <div class="pin-dot" id="dot3"></div>
+        <div class="pin-dot" id="dot4"></div>
+        <div class="pin-dot" id="dot5"></div>
+      </div>
+      <div class="pin-keypad" id="pinKeypad">
+        <div class="pin-key" onclick="pinPress('1')">1</div>
+        <div class="pin-key" onclick="pinPress('2')">2</div>
+        <div class="pin-key" onclick="pinPress('3')">3</div>
+        <div class="pin-key" onclick="pinPress('4')">4</div>
+        <div class="pin-key" onclick="pinPress('5')">5</div>
+        <div class="pin-key" onclick="pinPress('6')">6</div>
+        <div class="pin-key" onclick="pinPress('7')">7</div>
+        <div class="pin-key" onclick="pinPress('8')">8</div>
+        <div class="pin-key" onclick="pinPress('9')">9</div>
+        <div class="pin-key zero" onclick="pinPress('0')">0</div>
+        <div class="pin-key del" onclick="pinBackspace()">⌫</div>
+      </div>
+      <div class="pin-error" id="pinError"></div>
+      <div class="pin-hint" id="pinHint"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SET PIN SCREEN ============ -->
+<div class="screen" id="setPinScreen">
+  <div class="login-box" style="z-index:1">
+    <div class="login-logo">
+      <div class="logo-icon">🔐</div>
+      <h1>CollectPro</h1>
+      <p>First-time setup</p>
+    </div>
+    <div class="login-card">
+      <div class="set-pin-step" id="setPinStep">Step <span>1</span> of 2</div>
+      <div class="pin-label" id="setPinLabel">Create Your 6-Digit PIN</div>
+      <div class="pin-dots" id="setPinDots">
+        <div class="pin-dot" id="sdot0"></div>
+        <div class="pin-dot" id="sdot1"></div>
+        <div class="pin-dot" id="sdot2"></div>
+        <div class="pin-dot" id="sdot3"></div>
+        <div class="pin-dot" id="sdot4"></div>
+        <div class="pin-dot" id="sdot5"></div>
+      </div>
+      <div class="pin-keypad">
+        <div class="pin-key" onclick="setPinPress('1')">1</div>
+        <div class="pin-key" onclick="setPinPress('2')">2</div>
+        <div class="pin-key" onclick="setPinPress('3')">3</div>
+        <div class="pin-key" onclick="setPinPress('4')">4</div>
+        <div class="pin-key" onclick="setPinPress('5')">5</div>
+        <div class="pin-key" onclick="setPinPress('6')">6</div>
+        <div class="pin-key" onclick="setPinPress('7')">7</div>
+        <div class="pin-key" onclick="setPinPress('8')">8</div>
+        <div class="pin-key" onclick="setPinPress('9')">9</div>
+        <div class="pin-key zero" onclick="setPinPress('0')">0</div>
+        <div class="pin-key del" onclick="setPinBackspace()">⌫</div>
+      </div>
+      <div class="pin-error" id="setPinError"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD SCREEN ============ -->
+<div class="screen" id="dashScreen">
+  <div class="topbar">
+    <div class="topbar-logo">💼 CollectPro</div>
+    <div class="topbar-user" id="topbarUser">📍 <span id="userAreaLabel">All Areas</span></div>
+    <button class="logout-btn" onclick="logout()">Lock 🔒</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-card">
+      <div class="stat-label">Parties</div>
+      <div class="stat-value amber" id="statParties">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total O/S</div>
+      <div class="stat-value amber" id="statTotal">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Overdue</div>
+      <div class="stat-value red" id="statOverdue">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Bills</div>
+      <div class="stat-value green" id="statBills">—</div>
+    </div>
+  </div>
+
+  <!-- Search Section -->
+  <div class="search-section">
+    <div class="search-row">
+      <div class="search-wrap">
+        <div class="search-icon">🔍</div>
+        <input class="search-input" id="partySearch" type="search" placeholder="Search party name..." oninput="filterParties()">
+      </div>
+      <div class="area-select-wrap">
+        <div class="search-icon">📍</div>
+        <select class="area-select" id="areaFilter" onchange="filterParties()">
+          <option value="">All Areas</option>
+        </select>
+      </div>
+    </div>
+    <div class="sort-row">
+      <div class="sort-pill active" id="pill-os" onclick="setSort('os')">🔺 Total O/S</div>
+      <div class="sort-pill" id="pill-overdue" onclick="setSort('overdue')">🔴 Overdue</div>
+      <div class="sort-pill" id="pill-name" onclick="setSort('name')">🔤 Name</div>
+      <div class="sort-pill" id="pill-bills" onclick="setSort('bills')">📋 Bills</div>
+    </div>
+  </div>
+
+  <div class="results-info" id="resultsInfo"></div>
+
+  <div class="party-list" id="partyList">
+    <!-- skeleton -->
+    <div class="skeleton skeleton-card"></div>
+    <div class="skeleton skeleton-card"></div>
+    <div class="skeleton skeleton-card"></div>
+    <div class="skeleton skeleton-card"></div>
+    <div class="skeleton skeleton-card"></div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-btn active">
+      <div class="nav-icon">🏠</div>
+      <div>Home</div>
+    </div>
+    <div class="nav-btn" onclick="showAreaConfig()">
+      <div class="nav-icon">📍</div>
+      <div>My Areas</div>
+    </div>
+    <div class="nav-btn" onclick="logout()">
+      <div class="nav-icon">🔒</div>
+      <div>Lock</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DETAIL SCREEN ============ -->
+<div class="screen" id="detailScreen">
+  <div class="detail-header">
+    <div class="back-btn" onclick="showDash()">← Back</div>
+    <div class="detail-party-name" id="detailName">Party Name</div>
+    <div class="detail-area-tag" id="detailArea">Area</div>
+  </div>
+  <div class="detail-body" id="detailBody">
+  </div>
+</div>
+
+<!-- ============ AREA CONFIG SCREEN ============ -->
+<div class="screen" id="areaConfigScreen">
+  <div class="topbar">
+    <div class="back-btn" onclick="showDash()" style="margin:0">← Back</div>
+    <div style="flex:1"></div>
+  </div>
+  <div class="area-config-body">
+    <div class="area-config-title">My Areas 📍</div>
+    <div class="area-config-subtitle">Select the areas you cover. Only parties from these areas will be shown.</div>
+    <div class="area-chips-grid" id="areaChipsGrid"></div>
+    <button class="save-areas-btn" onclick="saveAreaConfig()">Save & Apply ✓</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIG — GitHub raw CSV base URL
+// Update this to your repo's raw content URL after creating the repo
+// ============================================================
+const CSV_BASE = 'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/';
+
+// All 55 areas from your data
+const ALL_AREAS = ['#EXPORT','#HOSPITAL','#INSTITUTION SU','**CLOSE**','..','1-MUM-DAWABAZAR','1-MUM-SOBO-WHC','11-DA-KUR-BAN','12-SAN-AND-SAK','13-JOGES-BORIVA','14-DAHIS-BHAYE','15-VASAI-DAHAN','21-GHATK-MULUD','22-THANE','23-BHIWANDI','24-KLWA-DOMBIV','25-KLY-ULH-BADL','31-WADAL-MANKH','32-VASHI-PANVEL','33-TRANS HARB','AHILYANAGAR','AKOLA','AMRAVATI','BEED','BHANDARA','BULDHANA','CHANDRAPUR','COMMISSION','DHULE','GADCHIROLI','GOA','GONDIA','HINGOLI','JALGAON','JALNA','KARNATAKA','KOKAN','KOLHAPUR','LATUR','NAGPUR','NANDED','NANDURBAR','NASHIK','OMS','OSMANABAD','PARBHANI','PUNE','RAIGAD','SAMBHAJINAGAR','SANGLI','SATARA','SOLAPUR','WARDHA','WASHIM','YAVATMAL'];
+
+// ============================================================
+// STATE
+// ============================================================
+let pinBuffer = '';
+let setPinBuffer = '';
+let setPinStep = 1;
+let setPinFirst = '';
+
+let partyMst = {};     // name -> {addr1, addr2, addr3, mobile, area}
+let ledger = {};       // name -> {total, overdue, months}
+let outstanding = {};  // name -> [{billno, date, billamt, balance, days}]
+let allParties = [];   // filtered list for current user
+let filtered = [];
+let sortMode = 'os';
+let currentParty = null;
+
+const TODAY = new Date();
+
+// ============================================================
+// STORAGE HELPERS
+// ============================================================
+function ls(key) {
+  try { return localStorage.getItem(key); } catch(e) { return null; }
+}
+function lsSet(key, val) {
+  try { localStorage.setItem(key, val); } catch(e) {}
+}
+
+function getStoredPin() { return ls('cp_pin'); }
+function getMyAreas() {
+  try { return JSON.parse(ls('cp_areas') || '[]'); } catch(e) { return []; }
+}
+function saveMyAreas(areas) { lsSet('cp_areas', JSON.stringify(areas)); }
+
+// ============================================================
+// SCREEN MANAGEMENT
+// ============================================================
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showDash() { show('dashScreen'); }
+
+// ============================================================
+// INIT
+// ============================================================
+window.onload = async function() {
+  // Hide loading initially
+  document.getElementById('loadingOverlay').style.display = 'none';
+  
+  // Check if PIN set
+  const pin = getStoredPin();
+  if (!pin) {
+    show('setPinScreen');
+    updateSetPinDots();
+  } else {
+    show('loginScreen');
+    document.getElementById('pinHint').textContent = 'PIN saved on this device';
+  }
+};
+
+// ============================================================
+// LOGIN PIN
+// ============================================================
+function pinPress(digit) {
+  if (pinBuffer.length >= 6) return;
+  pinBuffer += digit;
+  updatePinDots();
+  if (pinBuffer.length === 6) {
+    setTimeout(checkPin, 150);
+  }
+}
+
+function pinBackspace() {
+  if (pinBuffer.length === 0) return;
+  pinBuffer = pinBuffer.slice(0, -1);
+  updatePinDots();
+  document.getElementById('pinError').textContent = '';
+}
+
+function updatePinDots() {
+  for (let i = 0; i < 6; i++) {
+    document.getElementById('dot' + i).classList.toggle('filled', i < pinBuffer.length);
+  }
+}
+
+function checkPin() {
+  const stored = getStoredPin();
+  if (pinBuffer === stored) {
+    // correct
+    loadData();
+  } else {
+    document.getElementById('pinError').textContent = 'Incorrect PIN. Try again.';
+    document.getElementById('pinDots').classList.add('shake');
+    setTimeout(() => document.getElementById('pinDots').classList.remove('shake'), 500);
+    pinBuffer = '';
+    updatePinDots();
+  }
+}
+
+function logout() {
+  pinBuffer = '';
+  updatePinDots();
+  document.getElementById('pinError').textContent = '';
+  show('loginScreen');
+}
+
+// ============================================================
+// SET PIN
+// ============================================================
+function setPinPress(digit) {
+  if (setPinBuffer.length >= 6) return;
+  setPinBuffer += digit;
+  updateSetPinDots();
+  if (setPinBuffer.length === 6) {
+    setTimeout(handleSetPin, 150);
+  }
+}
+
+function setPinBackspace() {
+  if (setPinBuffer.length === 0) return;
+  setPinBuffer = setPinBuffer.slice(0, -1);
+  updateSetPinDots();
+}
+
+function updateSetPinDots() {
+  for (let i = 0; i < 6; i++) {
+    document.getElementById('sdot' + i).classList.toggle('filled', i < setPinBuffer.length);
+  }
+}
+
+function handleSetPin() {
+  if (setPinStep === 1) {
+    setPinFirst = setPinBuffer;
+    setPinBuffer = '';
+    updateSetPinDots();
+    setPinStep = 2;
+    document.getElementById('setPinStep').innerHTML = 'Step <span>2</span> of 2';
+    document.getElementById('setPinLabel').textContent = 'Confirm Your PIN';
+    document.getElementById('setPinError').textContent = '';
+  } else {
+    if (setPinBuffer === setPinFirst) {
+      lsSet('cp_pin', setPinBuffer);
+      showToast('PIN set successfully! ✓');
+      setPinBuffer = '';
+      setPinStep = 1;
+      setPinFirst = '';
+      show('areaConfigScreen');
+      buildAreaChips();
+    } else {
+      document.getElementById('setPinError').textContent = 'PINs do not match. Start over.';
+      document.getElementById('setPinDots').classList.add('shake');
+      setTimeout(() => document.getElementById('setPinDots').classList.remove('shake'), 500);
+      setPinBuffer = '';
+      setPinFirst = '';
+      setPinStep = 1;
+      updateSetPinDots();
+      document.getElementById('setPinStep').innerHTML = 'Step <span>1</span> of 2';
+      document.getElementById('setPinLabel').textContent = 'Create Your 6-Digit PIN';
+    }
+  }
+}
+
+// ============================================================
+// AREA CONFIG
+// ============================================================
+let selectedAreas = new Set();
+
+function showAreaConfig() {
+  selectedAreas = new Set(getMyAreas());
+  buildAreaChips();
+  show('areaConfigScreen');
+}
+
+function buildAreaChips() {
+  selectedAreas = new Set(getMyAreas());
+  const grid = document.getElementById('areaChipsGrid');
+  grid.innerHTML = ALL_AREAS.map(a => `
+    <div class="area-chip ${selectedAreas.has(a) ? 'selected' : ''}" 
+         id="chip_${a.replace(/[^a-zA-Z0-9]/g,'_')}" 
+         onclick="toggleArea('${a.replace(/'/g,"\\'")}')">
+      ${a}
+    </div>
+  `).join('');
+}
+
+function toggleArea(area) {
+  if (selectedAreas.has(area)) {
+    selectedAreas.delete(area);
+  } else {
+    selectedAreas.add(area);
+  }
+  buildAreaChips();
+}
+
+function saveAreaConfig() {
+  if (selectedAreas.size === 0) {
+    showToast('Please select at least 1 area');
+    return;
+  }
+  saveMyAreas([...selectedAreas]);
+  showToast(`${selectedAreas.size} areas saved ✓`);
+  // If data already loaded, re-filter
+  if (Object.keys(partyMst).length > 0) {
+    buildPartyList();
+    updateAreaSelect();
+    updateStats();
+  }
+  showDash();
+  loadData();
+}
+
+// ============================================================
+// DATA LOADING
+// ============================================================
+async function loadData() {
+  document.getElementById('loadingOverlay').style.display = 'flex';
+  show('dashScreen');
+  
+  try {
+    const [pmText, lsText, osText] = await Promise.all([
+      fetchCSV('partymst.csv'),
+      fetchCSV('ledgersummary.csv'),
+      fetchCSV('outstanding.csv')
+    ]);
+
+    parsePartyMst(pmText);
+    parseLedger(lsText);
+    parseOutstanding(osText);
+    
+    buildPartyList();
+    updateAreaSelect();
+    updateStats();
+    
+    document.getElementById('loadingOverlay').style.display = 'none';
+    showToast('Data loaded ✓');
+  } catch(e) {
+    document.getElementById('loadingOverlay').style.display = 'none';
+    // Use sample/demo data if fetch fails
+    showToast('⚠ Using demo data — update CSV_BASE URL');
+    loadDemoData();
+  }
+}
+
+async function fetchCSV(name) {
+  const url = CSV_BASE + name;
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('fetch failed: ' + url);
+  return r.text();
+}
+
+// ============================================================
+// CSV PARSERS
+// ============================================================
+function parseCSVLine(line) {
+  const res = [];
+  let cur = '';
+  let inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') { inQ = !inQ; }
+    else if (c === ',' && !inQ) { res.push(cur.trim()); cur = ''; }
+    else { cur += c; }
+  }
+  res.push(cur.trim());
+  return res;
+}
+
+function parsePartyMst(text) {
+  partyMst = {};
+  const lines = text.split('\n');
+  // skip header row (index 0)
+  for (let i = 1; i < lines.length; i++) {
+    const cols = parseCSVLine(lines[i]);
+    if (cols.length < 24) continue;
+    // col C = index 2 (ledger/name), G=6 addr1, H=7 addr2, I=8 addr3, P=15 mobile, X=23 area
+    const name = cols[2]?.trim();
+    if (!name || name === '') continue;
+    partyMst[name] = {
+      addr1: cols[6]?.trim() || '',
+      addr2: cols[7]?.trim() || '',
+      addr3: cols[8]?.trim() || '',
+      mobile: cols[15]?.trim() || '',
+      area: cols[23]?.trim() || ''
+    };
+  }
+}
+
+function parseLedger(text) {
+  ledger = {};
+  const lines = text.split('\n');
+  for (let i = 1; i < lines.length; i++) {
+    const cols = parseCSVLine(lines[i]);
+    if (cols.length < 5) continue;
+    const name = cols[0]?.trim();
+    if (!name) continue;
+    const total = parseFloat(cols[1]) || 0;
+    // Cols C,D,E = index 2,3,4 = this month + prev 2 months = 3 months credit window
+    const m1 = parseFloat(cols[2]) || 0;
+    const m2 = parseFloat(cols[3]) || 0;
+    const m3 = parseFloat(cols[4]) || 0;
+    const overdue = Math.max(0, total - m1 - m2 - m3);
+    ledger[name] = { total, overdue, m1, m2, m3 };
+  }
+}
+
+function parseOutstanding(text) {
+  outstanding = {};
+  const lines = text.split('\n');
+  for (let i = 1; i < lines.length; i++) {
+    const cols = parseCSVLine(lines[i]);
+    if (cols.length < 5) continue;
+    const name = cols[0]?.trim();
+    if (!name) continue;
+    if (!outstanding[name]) outstanding[name] = [];
+    outstanding[name].push({
+      billno: cols[1]?.trim() || '',
+      date: cols[2]?.trim() || '',
+      billamt: parseFloat(cols[3]) || 0,
+      balance: parseFloat(cols[4]) || 0,
+      days: parseInt(cols[5]) || calcDays(cols[2]?.trim())
+    });
+  }
+}
+
+function calcDays(dateStr) {
+  if (!dateStr) return 0;
+  // dd-mm-yy or dd-mm-yyyy
+  const parts = dateStr.split('-');
+  if (parts.length !== 3) return 0;
+  let [d, m, y] = parts;
+  if (y.length === 2) y = '20' + y;
+  const dt = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
+  return Math.floor((TODAY - dt) / (1000 * 60 * 60 * 24));
+}
+
+// ============================================================
+// PARTY LIST BUILDER
+// ============================================================
+function buildPartyList() {
+  const myAreas = getMyAreas();
+  
+  allParties = Object.keys(partyMst)
+    .filter(name => {
+      const party = partyMst[name];
+      // If user has areas set, filter by them
+      if (myAreas.length > 0 && !myAreas.includes(party.area)) return false;
+      // Only show parties that have outstanding
+      return ledger[name] && ledger[name].total > 0;
+    })
+    .map(name => {
+      const p = partyMst[name];
+      const l = ledger[name] || { total: 0, overdue: 0 };
+      const bills = outstanding[name] || [];
+      return { name, area: p.area, total: l.total, overdue: l.overdue, bills };
+    });
+
+  filtered = [...allParties];
+  renderPartyList();
+  
+  document.getElementById('userAreaLabel').textContent = 
+    myAreas.length === 0 ? 'All Areas' : (myAreas.length === 1 ? myAreas[0] : `${myAreas.length} Areas`);
+}
+
+function updateAreaSelect() {
+  const myAreas = getMyAreas();
+  const sel = document.getElementById('areaFilter');
+  sel.innerHTML = '<option value="">All Areas</option>';
+  
+  // Get unique areas from current party list
+  const areas = [...new Set(allParties.map(p => p.area).filter(Boolean))].sort();
+  areas.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a;
+    opt.textContent = a;
+    sel.appendChild(opt);
+  });
+}
+
+function updateStats() {
+  document.getElementById('statParties').textContent = allParties.length;
+  const total = allParties.reduce((s, p) => s + p.total, 0);
+  const overdue = allParties.reduce((s, p) => s + p.overdue, 0);
+  const bills = allParties.reduce((s, p) => s + p.bills.length, 0);
+  document.getElementById('statTotal').textContent = '₹' + fmtNum(total);
+  document.getElementById('statOverdue').textContent = '₹' + fmtNum(overdue);
+  document.getElementById('statBills').textContent = bills;
+}
+
+function fmtNum(n) {
+  if (n >= 10000000) return (n/10000000).toFixed(1) + 'Cr';
+  if (n >= 100000) return (n/100000).toFixed(1) + 'L';
+  if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+  return Math.round(n).toLocaleString('en-IN');
+}
+
+function fmtFull(n) {
+  return Math.round(n).toLocaleString('en-IN');
+}
+
+// ============================================================
+// FILTER & SORT
+// ============================================================
+let sortMode2 = 'os';
+
+function setSort(mode) {
+  sortMode2 = mode;
+  document.querySelectorAll('.sort-pill').forEach(p => p.classList.remove('active'));
+  document.getElementById('pill-' + mode).classList.add('active');
+  filterParties();
+}
+
+function filterParties() {
+  const q = document.getElementById('partySearch').value.toLowerCase().trim();
+  const area = document.getElementById('areaFilter').value;
+
+  filtered = allParties.filter(p => {
+    const matchName = !q || p.name.toLowerCase().includes(q);
+    const matchArea = !area || p.area === area;
+    return matchName && matchArea;
+  });
+
+  // Sort
+  filtered.sort((a, b) => {
+    if (sortMode2 === 'os') return b.total - a.total;
+    if (sortMode2 === 'overdue') return b.overdue - a.overdue;
+    if (sortMode2 === 'name') return a.name.localeCompare(b.name);
+    if (sortMode2 === 'bills') return b.bills.length - a.bills.length;
+    return 0;
+  });
+
+  renderPartyList();
+}
+
+function renderPartyList() {
+  const list = document.getElementById('partyList');
+  const info = document.getElementById('resultsInfo');
+
+  info.textContent = `${filtered.length} parties • ₹${fmtNum(filtered.reduce((s, p) => s + p.total, 0))} total`;
+
+  if (filtered.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">🔍</div>
+        <p>No parties found</p>
+        <small>Try a different search or area filter</small>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(p => {
+    const overdueClass = p.overdue > 0 ? (p.overdue > p.total * 0.5 ? 'has-overdue' : 'warn-overdue') : '';
+    return `
+    <div class="party-card ${overdueClass}" onclick="showDetail('${p.name.replace(/'/g, "\\'")}')">
+      <div class="party-name">${highlightMatch(p.name)}</div>
+      <div class="party-area">📍 ${p.area || '—'}</div>
+      <div class="party-nums">
+        <div class="party-num-item">
+          <div class="party-num-label">Total O/S</div>
+          <div class="party-num-val">₹${fmtNum(p.total)}</div>
+        </div>
+        <div class="party-num-item">
+          <div class="party-num-label">Overdue</div>
+          <div class="party-num-val ${p.overdue > 0 ? 'overdue' : 'safe'}">₹${fmtNum(p.overdue)}</div>
+        </div>
+      </div>
+      <div class="party-bills-count">${p.bills.length} bills</div>
+      <div class="party-chevron">›</div>
+    </div>`;
+  }).join('');
+}
+
+function highlightMatch(name) {
+  const q = document.getElementById('partySearch').value.trim();
+  if (!q) return name;
+  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  return name.replace(re, '<mark style="background:rgba(245,158,11,0.3);color:inherit;border-radius:2px">$1</mark>');
+}
+
+// ============================================================
+// DETAIL VIEW
+// ============================================================
+function showDetail(name) {
+  currentParty = name;
+  const p = partyMst[name] || {};
+  const l = ledger[name] || { total: 0, overdue: 0 };
+  const bills = (outstanding[name] || []).sort((a, b) => b.days - a.days);
+
+  document.getElementById('detailName').textContent = name;
+  document.getElementById('detailArea').textContent = '📍 ' + (p.area || '—');
+
+  const addrParts = [p.addr1, p.addr2, p.addr3].filter(Boolean);
+  const addrHtml = addrParts.length
+    ? addrParts.map(a => `<div>${a}</div>`).join('')
+    : '<div style="color:var(--text3)">Address not available</div>';
+
+  const mobileHtml = p.mobile && p.mobile !== '0' && p.mobile.length >= 10
+    ? `<a class="mobile-link" href="tel:${p.mobile}">
+         <span class="call-icon">📞</span>
+         ${p.mobile}
+         <span style="margin-left:auto;color:var(--safe);font-size:12px">Call ›</span>
+       </a>`
+    : `<div style="color:var(--text3);font-size:13px;margin-top:8px">No mobile number</div>`;
+
+  // Bill breakdown
+  const currentOs = l.total - l.overdue;
+  const overdueCount = bills.filter(b => b.days > 90).length;
+
+  const billsHtml = bills.map(b => {
+    let ageClass = '';
+    let badgeClass = '';
+    if (b.days > 90) { ageClass = 'overdue'; badgeClass = 'overdue'; }
+    else if (b.days > 60) { ageClass = 'warning'; badgeClass = 'warning'; }
+    
+    return `
+    <div class="bill-card ${ageClass}">
+      <div class="bill-top">
+        <div>
+          <div class="bill-no">${b.billno}</div>
+          <div class="bill-date">📅 ${b.date}</div>
+        </div>
+        <div class="bill-days-badge ${badgeClass}">${b.days}d</div>
+      </div>
+      <div class="bill-amounts">
+        <div class="bill-amt-item">
+          <div class="bill-amt-label">Bill Amt</div>
+          <div class="bill-amt-val">₹${fmtFull(b.billamt)}</div>
+        </div>
+        <div class="bill-amt-item">
+          <div class="bill-amt-label">Outstanding</div>
+          <div class="bill-amt-val ${b.balance < b.billamt ? 'pending' : ''}">₹${fmtFull(b.balance)}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('detailBody').innerHTML = `
+    <!-- Address -->
+    <div class="info-card">
+      <div class="info-card-title">📍 Address & Contact</div>
+      <div class="address-text">${addrHtml}</div>
+      ${mobileHtml}
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-row">
+      <div class="summary-tile">
+        <div class="label">Total O/S</div>
+        <div class="value">₹${fmtFull(l.total)}</div>
+      </div>
+      <div class="summary-tile overdue-tile">
+        <div class="label">Overdue (&gt;90d)</div>
+        <div class="value">₹${fmtFull(l.overdue)}</div>
+      </div>
+      <div class="summary-tile current-tile">
+        <div class="label">In Credit</div>
+        <div class="value">₹${fmtFull(Math.max(0, currentOs))}</div>
+      </div>
+      <div class="summary-tile">
+        <div class="label">Bills</div>
+        <div class="value">${bills.length}</div>
+      </div>
+    </div>
+
+    <!-- Bills -->
+    <div class="bills-section-title">📋 Bill-wise Details (${bills.length})</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--safe)"></div>Current (&lt;60d)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--warn)"></div>Warning (60-90d)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--overdue)"></div>Overdue (&gt;90d)</div>
+    </div>
+
+    ${bills.length ? billsHtml : '<div class="empty-state"><div class="icon">✅</div><p>No outstanding bills</p></div>'}
+  `;
+
+  show('detailScreen');
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ============================================================
+// DEMO DATA (fallback if GitHub not configured)
+// ============================================================
+function loadDemoData() {
+  // Inject a few sample parties for demo
+  partyMst = {
+    'DEMO PHARMA MUMBAI': { addr1: '12 Marine Lines', addr2: 'Mumbai 400001', addr3: 'Maharashtra', mobile: '9876543210', area: '1-MUM-DAWABAZAR' },
+    'BHIWANDI MEDICAL': { addr1: 'Shop 5, Station Road', addr2: 'Bhiwandi', addr3: '', mobile: '9123456789', area: '23-BHIWANDI' },
+    'PUNE HEALTHCARE': { addr1: '45 Koregaon Park', addr2: 'Pune 411001', addr3: '', mobile: '9988776655', area: 'PUNE' },
+    'NAGPUR DRUGS': { addr1: 'Near Bus Stand', addr2: 'Nagpur', addr3: '', mobile: '9871234560', area: 'NAGPUR' },
+  };
+  ledger = {
+    'DEMO PHARMA MUMBAI': { total: 152000, overdue: 68000 },
+    'BHIWANDI MEDICAL': { total: 43500, overdue: 0 },
+    'PUNE HEALTHCARE': { total: 218700, overdue: 125000 },
+    'NAGPUR DRUGS': { total: 87000, overdue: 32000 },
+  };
+  outstanding = {
+    'DEMO PHARMA MUMBAI': [
+      { billno: 'MUM/001', date: '15-Jan-26', billamt: 45000, balance: 45000, days: 115 },
+      { billno: 'MUM/045', date: '10-Mar-26', billamt: 62000, balance: 62000, days: 61 },
+      { billno: 'MUM/088', date: '20-Apr-26', billamt: 45000, balance: 45000, days: 20 },
+    ],
+    'BHIWANDI MEDICAL': [
+      { billno: 'BHI/112', date: '01-Apr-26', billamt: 43500, balance: 43500, days: 39 },
+    ],
+    'PUNE HEALTHCARE': [
+      { billno: 'PUN/023', date: '05-Dec-25', billamt: 80000, balance: 80000, days: 156 },
+      { billno: 'PUN/056', date: '10-Feb-26', billamt: 45000, balance: 45000, days: 89 },
+      { billno: 'PUN/089', date: '15-Apr-26', billamt: 93700, balance: 93700, days: 25 },
+    ],
+    'NAGPUR DRUGS': [
+      { billno: 'NAG/034', date: '05-Feb-26', billamt: 32000, balance: 32000, days: 94 },
+      { billno: 'NAG/067', date: '10-Apr-26', billamt: 55000, balance: 55000, days: 30 },
+    ],
+  };
+
+  // Set demo areas
+  if (getMyAreas().length === 0) {
+    saveMyAreas(['1-MUM-DAWABAZAR', '23-BHIWANDI', 'PUNE', 'NAGPUR']);
+  }
+
+  buildPartyList();
+  updateAreaSelect();
+  updateStats();
+  document.getElementById('loadingOverlay').style.display = 'none';
+}
+</script>
+</body>
+</html>
