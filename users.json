@@ -1,33 +1,22 @@
-{
-  "123456": {
-    "nickname": "Vinay",
-    "areas": [
-      "NAGPUR",
-      "WARDHA",
-      "AMRAVATI",
-      "AKOLA"
-    ]
+[
+  {
+    "name": "Ravi Mumbai",
+    "pin": "112233",
+    "areas": ["1-MUM-DAWABAZAR", "1-MUM-SOBO-WHC", "11-DA-KUR-BAN", "12-SAN-AND-SAK"]
   },
-  "222333": {
-    "nickname": "Rahul",
-    "areas": [
-      "PUNE",
-      "SATARA",
-      "SANGLI",
-      "KOLHAPUR"
-    ]
+  {
+    "name": "Suresh Bhiwandi",
+    "pin": "445566",
+    "areas": ["23-BHIWANDI", "22-THANE", "24-KLWA-DOMBIV", "25-KLY-ULH-BADL"]
   },
-  "444555": {
-    "nickname": "Mukesh",
-    "areas": [
-      "1-MUM-DAWABAZAR",
-      "22-THANE"
-    ]
+  {
+    "name": "Amit Pune",
+    "pin": "778899",
+    "areas": ["PUNE", "SATARA", "KOLHAPUR", "SANGLI"]
   },
-  "999999": {
-    "nickname": "Admin",
-    "areas": [
-      "ALL"
-    ]
+  {
+    "name": "Vijay All Areas",
+    "pin": "000000",
+    "areas": "ALL"
   }
-}
+]
