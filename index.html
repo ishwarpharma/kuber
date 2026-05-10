@@ -912,6 +912,8 @@
     box-shadow: 0 1px 4px rgba(0,0,0,0.3);
   }
 </style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#f59e0b">
 </head>
 <body>
 
@@ -1002,7 +1004,7 @@
 <div class="screen" id="dashScreen">
   <div class="topbar">
     <div class="topbar-logo">💼 CollectPro</div>
-    <div class="topbar-user" id="topbarUser">📍 <span id="userAreaLabel">All Areas</span></div>
+    <div class="topbar-user" id="topbarUser">👤 User</div>
     <button class="logout-btn" onclick="logout()">Lock 🔒</button>
   </div>
 
@@ -1106,6 +1108,9 @@
 // Update this to your repo's raw content URL after creating the repo
 // ============================================================
 const CSV_BASE = 'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/';
+const USERS_URL = CSV_BASE + 'users.json';
+let currentUser = null;
+let allowedAreas = [];
 
 // All 55 areas from your data
 const ALL_AREAS = ['#EXPORT','#HOSPITAL','#INSTITUTION SU','**CLOSE**','..','1-MUM-DAWABAZAR','1-MUM-SOBO-WHC','11-DA-KUR-BAN','12-SAN-AND-SAK','13-JOGES-BORIVA','14-DAHIS-BHAYE','15-VASAI-DAHAN','21-GHATK-MULUD','22-THANE','23-BHIWANDI','24-KLWA-DOMBIV','25-KLY-ULH-BADL','31-WADAL-MANKH','32-VASHI-PANVEL','33-TRANS HARB','AHILYANAGAR','AKOLA','AMRAVATI','BEED','BHANDARA','BULDHANA','CHANDRAPUR','COMMISSION','DHULE','GADCHIROLI','GOA','GONDIA','HINGOLI','JALGAON','JALNA','KARNATAKA','KOKAN','KOLHAPUR','LATUR','NAGPUR','NANDED','NANDURBAR','NASHIK','OMS','OSMANABAD','PARBHANI','PUNE','RAIGAD','SAMBHAJINAGAR','SANGLI','SATARA','SOLAPUR','WARDHA','WASHIM','YAVATMAL'];
@@ -1197,19 +1202,47 @@ function updatePinDots() {
   }
 }
 
-function checkPin() {
-  const stored = getStoredPin();
-  if (pinBuffer === stored) {
-    // correct
-    loadData();
-  } else {
-    document.getElementById('pinError').textContent = 'Incorrect PIN. Try again.';
-    document.getElementById('pinDots').classList.add('shake');
-    setTimeout(() => document.getElementById('pinDots').classList.remove('shake'), 500);
-    pinBuffer = '';
-    updatePinDots();
+
+async function checkPin() {
+
+  try {
+
+    const response = await fetch(USERS_URL);
+    const users = await response.json();
+
+    if (users[pinBuffer]) {
+
+      currentUser = users[pinBuffer];
+
+      if (currentUser.areas.includes('ALL')) {
+        allowedAreas = ['ALL'];
+      } else {
+        allowedAreas = currentUser.areas;
+      }
+
+      document.getElementById('topbarUser').innerHTML =
+        `👤 ${currentUser.nickname}`;
+
+      loadData();
+
+    } else {
+
+      document.getElementById('pinError').textContent =
+        'Invalid PIN';
+
+      pinBuffer = '';
+      updatePinDots();
+
+    }
+
+  } catch(err) {
+
+    document.getElementById('pinError').textContent =
+      'Unable to load users';
+
   }
 }
+
 
 function logout() {
   pinBuffer = '';
@@ -1451,13 +1484,13 @@ function calcDays(dateStr) {
 // PARTY LIST BUILDER
 // ============================================================
 function buildPartyList() {
-  const myAreas = getMyAreas();
+  const myAreas = allowedAreas.includes('ALL') ? null : allowedAreas;
   
   allParties = Object.keys(partyMst)
     .filter(name => {
       const party = partyMst[name];
       // If user has areas set, filter by them
-      if (myAreas.length > 0 && !myAreas.includes(party.area)) return false;
+      if (myAreas && !myAreas.includes(party.area)) return false;
       // Only show parties that have outstanding
       return ledger[name] && ledger[name].total > 0;
     })
@@ -1476,7 +1509,7 @@ function buildPartyList() {
 }
 
 function updateAreaSelect() {
-  const myAreas = getMyAreas();
+  const myAreas = allowedAreas.includes('ALL') ? null : allowedAreas;
   const sel = document.getElementById('areaFilter');
   sel.innerHTML = '<option value="">All Areas</option>';
   
@@ -1612,7 +1645,26 @@ function showDetail(name) {
          <span class="call-icon">📞</span>
          ${p.mobile}
          <span style="margin-left:auto;color:var(--safe);font-size:12px">Call ›</span>
-       </a>`
+       </a>
+         <a class="mobile-link"
+            href="https://wa.me/91${p.mobile}"
+            target="_blank">
+
+           <span class="call-icon">💬</span>
+           WhatsApp Party
+
+         </a>
+
+         <a class="mobile-link"
+            href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+               p.addr1 + ' ' + p.addr2 + ' ' + p.addr3
+            )}"
+            target="_blank">
+
+           <span class="call-icon">📍</span>
+           Open in Maps
+
+         </a>`
     : `<div style="color:var(--text3);font-size:13px;margin-top:8px">No mobile number</div>`;
 
   // Bill breakdown
@@ -1747,5 +1799,12 @@ function loadDemoData() {
   document.getElementById('loadingOverlay').style.display = 'none';
 }
 </script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
+</script>
 </body>
+
 </html>

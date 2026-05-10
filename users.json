@@ -1,0 +1,33 @@
+{
+  "123456": {
+    "nickname": "Vinay",
+    "areas": [
+      "NAGPUR",
+      "WARDHA",
+      "AMRAVATI",
+      "AKOLA"
+    ]
+  },
+  "222333": {
+    "nickname": "Rahul",
+    "areas": [
+      "PUNE",
+      "SATARA",
+      "SANGLI",
+      "KOLHAPUR"
+    ]
+  },
+  "444555": {
+    "nickname": "Mukesh",
+    "areas": [
+      "1-MUM-DAWABAZAR",
+      "22-THANE"
+    ]
+  },
+  "999999": {
+    "nickname": "Admin",
+    "areas": [
+      "ALL"
+    ]
+  }
+}
