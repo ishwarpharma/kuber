@@ -1,6 +1,8 @@
-# CollectPro Setup
+# KUBER — Smart Outstanding Manager
 
-Upload these files to GitHub root:
+KUBER is a mobile-first field collection management system for Ishwar Pharma.
+
+## Upload These Files to GitHub
 
 - index.html
 - users.json
@@ -10,7 +12,27 @@ Upload these files to GitHub root:
 - ledgersummary.csv
 - outstanding.csv
 
-Then enable GitHub Pages.
+## Admin Login
 
-Admin PIN:
+PIN:
 999999
+
+## Features
+
+- Area-wise user restriction
+- PIN login
+- Outstanding dashboard
+- Overdue calculations
+- WhatsApp integration
+- Google Maps integration
+- Mobile app install support
+- Offline caching
+
+## Daily Update
+
+Replace only:
+- partymst.csv
+- ledgersummary.csv
+- outstanding.csv
+
+with latest files.
