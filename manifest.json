@@ -1,7 +1,26 @@
 {
-  "name":"KUBER",
-  "short_name":"KUBER",
-  "display":"standalone",
-  "background_color":"#0b1220",
-  "theme_color":"#f59e0b"
+  "name": "Kuber by Ishwar Pharma",
+  "short_name": "Kuber",
+  "description": "Field collection app for Ishwar Pharma — outstanding, overdue & party details on the go.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0e1a",
+  "theme_color": "#f59e0b",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
