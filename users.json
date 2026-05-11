@@ -1,8 +1,8 @@
 [
   {
-    "name": "Ravi Mumbai",
-    "pin": "112233",
-    "areas": ["1-MUM-DAWABAZAR", "1-MUM-SOBO-WHC", "11-DA-KUR-BAN", "12-SAN-AND-SAK"]
+    "name": "Pandit Lingade",
+    "pin": "915204",
+    "areas": ["NANDED", "BEED", "LATUR", "OSMANABAD", "SAMBHAJINAGAR", "JALNA", "PARBHANI"]
   },
   {
     "name": "Suresh Bhiwandi",
@@ -14,6 +14,19 @@
     "pin": "778899",
     "areas": ["PUNE", "SATARA", "KOLHAPUR", "SANGLI"]
   },
+ 
+  {
+    "name": "Amit Pune",
+    "pin": "778899",
+    "areas": ["PUNE", "SATARA", "KOLHAPUR", "SANGLI"]
+  },
+  
+  {
+    "name": "Amit Pune",
+    "pin": "778899",
+    "areas": ["PUNE", "SATARA", "KOLHAPUR", "SANGLI"]
+  },
+  
   {
     "name": "Brijesh Shah",
     "pin": "443501",
