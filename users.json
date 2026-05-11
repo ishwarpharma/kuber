@@ -16,39 +16,12 @@
     "areas": ["SANGLI", "SATARA", "SOLAPUR", "KOLHAPUR", "KOKAN", "GOA", "PUNE", "AHILYANAGAR", "NASHIK", "SAMBHAJINAGAR"]
   },
   
-  
-  {
-    "name": "Amit Pune",
-    "pin": "778899",
-    "areas": ["PUNE", "SATARA", "KOLHAPUR", "SANGLI"]
-  },
- 
-  {
-    "name": "Amit Pune",
-    "pin": "778899",
-    "areas": ["PUNE", "SATARA", "KOLHAPUR", "SANGLI"]
-  },
-  
-  {
-    "name": "Amit Pune",
-    "pin": "778899",
-    "areas": ["PUNE", "SATARA", "KOLHAPUR", "SANGLI"]
-  },
-
   {
     "name": "Shubahngi Kadam",
     "pin": "482731",
     "areas": "ALL"
   },
-
-  {
-    "name": "Amit Pune",
-    "pin": "778899",
-    "areas": ["PUNE", "SATARA", "KOLHAPUR", "SANGLI"]
-  },
-
-
-  
+   
   {
     "name": "Brijesh Shah",
     "pin": "443501",
