@@ -114,11 +114,13 @@ body {
 .pill { background:#f3f4f6;border:1px solid var(--bdr);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--txt2);cursor:pointer;white-space:nowrap;flex-shrink:0;font-weight:500;transition:all .15s;font-family:inherit; }
 .pill.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
 
+.pill.reset-pill { background:#fff0f0; border-color:#fecaca; color:var(--red); font-weight:600; }
+.pill.reset-pill:active { background:var(--red); color:#fff; }
 /* Results */
 .rinfo { padding:8px 14px;font-size:12px;color:var(--txt2);background:var(--bg); }
 
 /* ════ PARTY LIST ════ */
-.plist { padding:8px 14px 90px;display:flex;flex-direction:column;gap:6px; }
+.plist { padding:8px 14px 32px;display:flex;flex-direction:column;gap:6px; }
 .pc { background:#fff;border:1px solid var(--bdr);border-radius:var(--r);padding:12px 14px;cursor:pointer;position:relative;overflow:hidden;transition:box-shadow .15s; }
 .pc:active{box-shadow:0 0 0 2px var(--blue)}
 .pc::before { content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--green); }
@@ -138,8 +140,6 @@ body {
 .empty .ico{font-size:40px;margin-bottom:8px} .empty p{font-size:14px} .empty small{font-size:12px;display:block;margin-top:4px}
 
 /* ════ BOTTOM NAV ════ */
-.bnav { position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--bdr);display:flex;z-index:99;box-shadow:0 -1px 8px rgba(0,0,0,.06); }
-.nbtn { flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9px 0 11px;cursor:pointer;font-size:10px;color:var(--txt3);font-weight:600;letter-spacing:.4px;text-transform:uppercase;gap:3px; }
 .nbtn .ni{font-size:18px} .nbtn.active{color:var(--blue)}
 
 /* ════ DETAIL ════ */
@@ -148,7 +148,7 @@ body {
 .bbtn { display:flex;align-items:center;gap:5px;color:var(--blue);font-size:14px;font-weight:600;cursor:pointer;margin-bottom:6px;width:fit-content; }
 .dname { font-size:16px;font-weight:700;color:var(--txt);line-height:1.3; }
 .dtag  { display:inline-block;background:var(--bg);border:1px solid var(--bdr);border-radius:4px;padding:2px 8px;font-size:11px;color:var(--txt2);margin-top:4px; }
-.dbody { padding:12px 14px 90px;display:flex;flex-direction:column;gap:8px; }
+.dbody { padding:12px 14px 32px;display:flex;flex-direction:column;gap:8px; }
 .icard { background:#fff;border:1px solid var(--bdr);border-radius:var(--r);padding:14px; }
 .itit  { font-size:11px;color:var(--txt3);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:10px; }
 .atxt  { font-size:14px;color:var(--txt2);line-height:1.7; }
@@ -225,7 +225,6 @@ body {
   <div class="topbar">
     <div class="tlogo">🪙 Kuber</div>
     <div class="tuser" id="tuser"></div>
-    <button class="lbtn" onclick="doLock()">Lock 🔒</button>
   </div>
   <div class="sbar">
     <div class="sc s-b"><div class="sl">Parties</div><div class="sv cb" id="stP">—</div></div>
@@ -241,17 +240,12 @@ body {
     <div class="prow">
       <div class="pill active" id="pill-os"     onclick="setSort('os')">↓ Total O/S</div>
       <div class="pill"        id="pill-overdue" onclick="setSort('overdue')">↓ Overdue</div>
-      <div class="pill"        id="pill-name"    onclick="setSort('name')">A–Z Name</div>
-      <div class="pill"        id="pill-bills"   onclick="setSort('bills')">↓ Bills</div>
+      <div class="pill reset-pill"               onclick="resetFilters()">✕ Clear</div>
     </div>
   </div>
   <div class="rinfo" id="rinfo"></div>
   <div class="plist" id="plist">
     <div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>
-  </div>
-  <div class="bnav">
-    <div class="nbtn active"><div class="ni">🏠</div>Home</div>
-    <div class="nbtn" onclick="doLock()"><div class="ni">🔒</div>Lock</div>
   </div>
 </div>
 
@@ -453,6 +447,14 @@ function setSort(m){
   sortMode=m;
   document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
   document.getElementById('pill-'+m).classList.add('active');
+  doFilter();
+}
+function resetFilters(){
+  document.getElementById('sq').value='';
+  document.getElementById('sa').value='';
+  sortMode='os';
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pill-os').classList.add('active');
   doFilter();
 }
 function doFilter(){
