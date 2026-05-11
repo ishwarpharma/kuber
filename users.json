@@ -9,6 +9,14 @@
     "pin": "604913",
     "areas": ["SANGLI", "SATARA", "SOLAPUR", "KOLHAPUR", "KOKAN", "GOA"]
   },
+ 
+  {
+    "name": "Rajendra Sakpal",
+    "pin": "728145",
+    "areas": ["SANGLI", "SATARA", "SOLAPUR", "KOLHAPUR", "KOKAN", "GOA", "PUNE", "AHILYANAGAR", "NASHIK", "SAMBHAJINAGAR"]
+  },
+  
+  
   {
     "name": "Amit Pune",
     "pin": "778899",
