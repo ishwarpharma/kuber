@@ -26,6 +26,20 @@
     "pin": "778899",
     "areas": ["PUNE", "SATARA", "KOLHAPUR", "SANGLI"]
   },
+
+  {
+    "name": "Shubahngi Kadam",
+    "pin": "482731",
+    "areas": "ALL"
+  },
+
+  {
+    "name": "Amit Pune",
+    "pin": "778899",
+    "areas": ["PUNE", "SATARA", "KOLHAPUR", "SANGLI"]
+  },
+
+
   
   {
     "name": "Brijesh Shah",
