@@ -496,17 +496,57 @@ function render(){
 }
 
 /* ── DETAIL ── */
+
+/* Calculate the credit cutoff dates dynamically from today.
+   Credit window = this month + previous 2 months (3 months total, cols C/D/E).
+   Overdue cutoff = last day of the month that is 3 months before current month.
+   Credit start   = 1st of the month that is 2 months before current month.
+
+   Example: today = 12 May 2026
+     → overdue cutoff = 28 Feb 2026  (last day of Feb, which is 3 months before May)
+     → credit start   = 1 Mar 2026   (1st of Mar, month right after cutoff)
+*/
+function getCutoffLabels(){
+  const now = new Date();
+  const thisMonth = now.getMonth();   // 0-based
+  const thisYear  = now.getFullYear();
+
+  /* Month that is 3 months before current → that month's last day = overdue cutoff */
+  const cutoffMonth = thisMonth - 3;  // may go negative, Date() handles it
+  const cutoffLastDay = new Date(thisYear, cutoffMonth + 1, 0); // day 0 = last day of cutoffMonth
+
+  /* Month right after cutoff = credit start */
+  const creditStartDay = new Date(thisYear, cutoffMonth + 1, 1);
+
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  const fmtDate = d =>
+    d.getDate() + ' ' + monthNames[d.getMonth()] + ' ' + d.getFullYear();
+
+  return {
+    cutoffDate:      cutoffLastDay,          // Date object for bill comparison
+    overdueLabel:    'Till ' + fmtDate(cutoffLastDay),
+    creditLabel:     'From ' + fmtDate(creditStartDay)
+  };
+}
+
 function showDetail(name){
   const p=partyMst[name]||{}, l=ledger[name]||{total:0,overdue:0};
   const bs=(outstanding[name]||[]).sort((a,b)=>b.days-a.days);
+  const { cutoffDate, overdueLabel, creditLabel } = getCutoffLabels();
+
   document.getElementById('dname').textContent=name;
   document.getElementById('dtag').textContent='📍 '+(p.area||'—');
   const addrHtml=[p.addr1,p.addr2,p.addr3].filter(Boolean).map(a=>`<div>${a}</div>`).join('')||'<div style="color:var(--txt3)">Address not available</div>';
   const callHtml=p.mobile?`<a class="clink" href="tel:${p.mobile}"><span class="cico">📞</span>${p.mobile}<span style="margin-left:auto;color:var(--green);font-size:12px;font-weight:600">Tap to Call ›</span></a>`:'<div style="color:var(--txt3);font-size:13px;margin-top:8px">No mobile number on file</div>';
   const credit=Math.max(0,l.total-l.overdue);
+
+  /* Bill card colour: red = billed on/before cutoff date, green = after */
   const billsHtml=bs.map(b=>{
-    const bc=b.days>90?'bo':b.days>60?'bw':'';
-    const bdc=b.days>90?'do':b.days>60?'dw':'';
+    const billDate = parseBillDate(b.date);
+    const isOverdue = billDate && billDate <= cutoffDate;
+    const bc  = isOverdue ? 'bo' : '';
+    const bdc = isOverdue ? 'do' : '';
     const partPaid=b.balance<b.billamt&&b.billamt>0;
     return `<div class="bcard ${bc}">
       <div class="btop">
@@ -520,24 +560,38 @@ function showDetail(name){
       </div>
     </div>`;
   }).join('');
+
   document.getElementById('dbody').innerHTML=`
     <div class="icard"><div class="itit">📍 Address & Contact</div><div class="atxt">${addrHtml}</div>${callHtml}</div>
     <div class="sgrid">
       <div class="stile"><div class="lbl">Total O/S</div><div class="val">₹${ff(l.total)}</div></div>
-      <div class="stile tile-r"><div class="lbl">Overdue &gt;90 days</div><div class="val">₹${ff(l.overdue)}</div></div>
-      <div class="stile tile-g"><div class="lbl">Within Credit</div><div class="val">₹${ff(credit)}</div></div>
+      <div class="stile tile-r"><div class="lbl">Overdue — ${overdueLabel}</div><div class="val">₹${ff(l.overdue)}</div></div>
+      <div class="stile tile-g"><div class="lbl">${creditLabel}</div><div class="val">₹${ff(credit)}</div></div>
       <div class="stile"><div class="lbl">Total Bills</div><div class="val">${bs.length}</div></div>
     </div>
     <div class="btit">Bill-wise Details (${bs.length})</div>
     <div class="lgnd">
-      <div class="lgi"><div class="lgd" style="background:var(--green)"></div>Current &lt;60 days</div>
-      <div class="lgi"><div class="lgd" style="background:var(--amber)"></div>60–90 days</div>
-      <div class="lgi"><div class="lgd" style="background:var(--red)"></div>Overdue &gt;90 days</div>
+      <div class="lgi"><div class="lgd" style="background:var(--green)"></div>${creditLabel}</div>
+      <div class="lgi"><div class="lgd" style="background:var(--red)"></div>Overdue — ${overdueLabel}</div>
     </div>
     ${bs.length?billsHtml:'<div class="empty"><div class="ico">✅</div><p>No outstanding bills</p></div>'}`;
   show('detailScreen');
 }
 function goBack(){ show('dashScreen'); }
+
+/* Parse bill date string (dd-Mon-yy or dd-Mon-yyyy) into a Date object */
+function parseBillDate(ds){
+  if(!ds) return null;
+  const months={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+  const p=ds.split('-');
+  if(p.length===3){
+    const d=parseInt(p[0]);
+    const m=months[p[1].toLowerCase().substring(0,3)];
+    let y=parseInt(p[2]); if(y<100) y+=2000;
+    if(!isNaN(d)&&m!==undefined&&!isNaN(y)) return new Date(y,m,d);
+  }
+  return null;
+}
 
 /* ── Helpers ── */
 function fmt(n){
