@@ -16,6 +16,12 @@
     "areas": ["SANGLI", "SATARA", "SOLAPUR", "KOLHAPUR", "KOKAN", "GOA", "PUNE", "AHILYANAGAR", "NASHIK", "SAMBHAJINAGAR"]
   },
 
+  {
+    "name": "Vinayak Surya",
+    "pin": "251768",
+    "areas": ["SANGLI", "SATARA", "SOLAPUR", "KOLHAPUR", "PUNE", "AHILYANAGAR"]
+  },
+  
 {
     "name": "Yogesh Singh",
     "pin": "731594",
