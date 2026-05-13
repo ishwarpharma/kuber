@@ -16,9 +16,15 @@
     "areas": ["SANGLI", "SATARA", "SOLAPUR", "KOLHAPUR", "KOKAN", "GOA", "PUNE", "AHILYANAGAR", "NASHIK", "SAMBHAJINAGAR"]
   },
 
+  {
+    "name": "Vinayak Surya",
+    "pin": "251768",
+    "areas": ["SANGLI", "SATARA", "SOLAPUR", "KOLHAPUR", "PUNE", "AHILYANAGAR"]
+  },
+  
 {
     "name": "Yogesh Singh",
-    "pin": "482731",
+    "pin": "731594",
     "areas": ["11-DA-KUR-BAN", "12-SAN-AND-SAK", "13-JOGES-BORIVA", "14-DAHIS-BHAYE", "15-VASAI-DAHAN"]
   },
 
@@ -29,8 +35,22 @@
   },
 
 {
+    "name": "Arvind Badole",
+    "pin": "176354",
+    "areas": ["NAGPUR", "GONDIA", "AKOLA", "AMRAVATI", "BHANDARA", "BULDHANA", "CHANDRAPUR", "GADCHIROLI", "WARDHA", "WASHIM", "YAVATMAL"]
+  },
+
+
+  
+{
     "name": "Rohit Chalke",
     "pin": "957183",
+    "areas": ["DHULE", "JALGAON", "JALNA", "NANDURBAR", "NASHIK", "SAMBHAJINAGAR"]
+  },
+
+{
+    "name": "Umesh Chauhan",
+    "pin": "839420",
     "areas": ["DHULE", "JALGAON", "JALNA", "NANDURBAR", "NASHIK", "SAMBHAJINAGAR"]
   },
   
