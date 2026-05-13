@@ -1,22 +1,75 @@
 [
   {
-    "name": "Ravi Mumbai",
-    "pin": "112233",
-    "areas": ["1-MUM-DAWABAZAR", "1-MUM-SOBO-WHC", "11-DA-KUR-BAN", "12-SAN-AND-SAK"]
+    "name": "Pandit Lingade",
+    "pin": "915204",
+    "areas": ["NANDED", "BEED", "LATUR", "OSMANABAD", "SAMBHAJINAGAR", "JALNA", "PARBHANI"]
   },
   {
-    "name": "Suresh Bhiwandi",
-    "pin": "445566",
-    "areas": ["23-BHIWANDI", "22-THANE", "24-KLWA-DOMBIV", "25-KLY-ULH-BADL"]
+    "name": "Pravin Pawar",
+    "pin": "604913",
+    "areas": ["SANGLI", "SATARA", "SOLAPUR", "KOLHAPUR", "KOKAN", "GOA"]
   },
+ 
   {
-    "name": "Amit Pune",
-    "pin": "778899",
-    "areas": ["PUNE", "SATARA", "KOLHAPUR", "SANGLI"]
+    "name": "Rajendra Sakpal",
+    "pin": "728145",
+    "areas": ["SANGLI", "SATARA", "SOLAPUR", "KOLHAPUR", "KOKAN", "GOA", "PUNE", "AHILYANAGAR", "NASHIK", "SAMBHAJINAGAR"]
   },
+
   {
-    "name": "Vijay All Areas",
-    "pin": "000000",
+    "name": "Vinayak Surya",
+    "pin": "251768",
+    "areas": ["SANGLI", "SATARA", "SOLAPUR", "KOLHAPUR", "PUNE", "AHILYANAGAR"]
+  },
+  
+{
+    "name": "Yogesh Singh",
+    "pin": "731594",
+    "areas": ["11-DA-KUR-BAN", "12-SAN-AND-SAK", "13-JOGES-BORIVA", "14-DAHIS-BHAYE", "15-VASAI-DAHAN"]
+  },
+
+{
+    "name": "Vinay Lakhade",
+    "pin": "817340",
+    "areas": ["NAGPUR", "GONDIA", "AKOLA", "AMRAVATI", "BHANDARA", "BULDHANA", "CHANDRAPUR", "GADCHIROLI", "WARDHA", "WASHIM", "YAVATMAL"]
+  },
+
+{
+    "name": "Arvind Badole",
+    "pin": "176354",
+    "areas": ["NAGPUR", "GONDIA", "AKOLA", "AMRAVATI", "BHANDARA", "BULDHANA", "CHANDRAPUR", "GADCHIROLI", "WARDHA", "WASHIM", "YAVATMAL"]
+  },
+
+
+  
+{
+    "name": "Rohit Chalke",
+    "pin": "957183",
+    "areas": ["DHULE", "JALGAON", "JALNA", "NANDURBAR", "NASHIK", "SAMBHAJINAGAR"]
+  },
+
+{
+    "name": "Umesh Chauhan",
+    "pin": "839420",
+    "areas": ["DHULE", "JALGAON", "JALNA", "NANDURBAR", "NASHIK", "SAMBHAJINAGAR"]
+  },
+  
+  {
+    "name": "Shubahngi Kadam",
+    "pin": "482731",
+    "areas": "ALL"
+  },
+
+{
+    "name": "Vaishnavi Jogale",
+    "pin": "684159",
+    "areas": "ALL"
+  },
+
+  
+  {
+    "name": "Brijesh Shah",
+    "pin": "443501",
     "areas": "ALL"
   }
 ]
