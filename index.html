@@ -54,9 +54,56 @@ body {
 #offlineBanner { display:none;position:fixed;top:0;left:0;right:0;z-index:1000;background:#92400e;color:#fff;font-size:13px;font-weight:600;text-align:center;padding:7px 16px; }
 
 /* Install */
-#installBanner { display:none;position:fixed;bottom:0;left:0;right:0;z-index:1000;background:#fff;border-top:1px solid var(--bdr);padding:12px 16px;align-items:center;gap:10px;box-shadow:0 -2px 12px rgba(0,0,0,.08); }
+/* Install wall button styles */
 .ibtn-i { background:var(--blue);border:none;border-radius:var(--rs);padding:8px 16px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;white-space:nowrap; }
 .ibtn-x { background:none;border:none;color:var(--txt3);font-size:22px;cursor:pointer;padding:0 2px;line-height:1; }
+
+/* ════ INSTALL WALL (full screen gate) ════ */
+#installWall {
+  position:fixed;inset:0;z-index:2000;
+  background:linear-gradient(160deg,#0f172a 0%,#1e3a5f 60%,#0f172a 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:28px 24px;text-align:center;
+}
+.iw-icon { font-size:64px;margin-bottom:6px; }
+.iw-name { font-size:28px;font-weight:700;color:#fff;letter-spacing:-.5px; }
+.iw-sub  { font-size:13px;color:#94a3b8;margin-top:4px;margin-bottom:32px; }
+
+.iw-card {
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  border-radius:16px;padding:20px;width:100%;max-width:340px;margin-bottom:16px;
+}
+.iw-card-title {
+  font-size:12px;font-weight:700;color:#f59e0b;text-transform:uppercase;
+  letter-spacing:.8px;margin-bottom:14px;
+}
+.iw-step {
+  display:flex;align-items:flex-start;gap:12px;
+  margin-bottom:14px;text-align:left;
+}
+.iw-step:last-child{margin-bottom:0}
+.iw-step-num {
+  width:26px;height:26px;border-radius:50%;
+  background:#f59e0b;color:#000;
+  font-size:13px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.iw-step-txt { font-size:14px;color:#e2e8f0;line-height:1.5;padding-top:3px; }
+.iw-step-txt span { color:#fff;font-weight:600; }
+
+.iw-install-btn {
+  width:100%;max-width:340px;
+  background:linear-gradient(135deg,#f59e0b,#d97706);
+  border:none;border-radius:12px;padding:16px;
+  font-size:17px;font-weight:700;color:#000;
+  cursor:pointer;letter-spacing:-.2px;
+  box-shadow:0 4px 20px rgba(245,158,11,.4);
+}
+.iw-install-btn:active{transform:scale(.97)}
+
+.iw-note {
+  font-size:12px;color:#64748b;margin-top:16px;line-height:1.6;max-width:300px;
+}
 
 /* ════ LOGIN ════ */
 #loginScreen { background:#fff;align-items:center;justify-content:center;padding:24px;min-height:100vh; }
@@ -80,26 +127,56 @@ body {
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 .shake { animation:shake .35s ease; }
 
-/* ════ TOP BAR ════ */
-.topbar { background:#fff;border-bottom:1px solid var(--bdr);padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.06); }
-.tlogo { font-size:17px;font-weight:700;color:var(--blue);flex:1;letter-spacing:-.2px; }
-.tuser { font-size:12px;color:var(--txt2); }
-.lbtn { background:#f3f4f6;border:1px solid var(--bdr);border-radius:6px;padding:6px 10px;color:var(--txt2);font-size:12px;font-weight:500;cursor:pointer; }
+/* ════ TOP BAR + STATS — navy hero block ════ */
+.topbar {
+  background:linear-gradient(135deg,#0f2250 0%,#1a3a6e 60%,#0f2250 100%);
+  padding:14px 16px 0;
+  position:sticky;top:0;z-index:100;
+  overflow:hidden;
+}
+/* subtle decorative circle — same vibe as IshwarCRM */
+.topbar::before {
+  content:'';position:absolute;
+  top:-60px;right:-60px;
+  width:200px;height:200px;
+  border-radius:50%;
+  background:rgba(255,255,255,.06);
+  pointer-events:none;
+}
+.topbar::after {
+  content:'';position:absolute;
+  bottom:-80px;right:30px;
+  width:160px;height:160px;
+  border-radius:50%;
+  background:rgba(255,255,255,.04);
+  pointer-events:none;
+}
+.tbar-top { display:flex;align-items:center;gap:10px;margin-bottom:14px;position:relative; }
+.tlogo { font-size:17px;font-weight:700;color:#fff;flex:1;letter-spacing:-.2px; }
+.tuser { font-size:12px;color:rgba(255,255,255,.65); }
+.lbtn { background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:6px 10px;color:rgba(255,255,255,.8);font-size:12px;font-weight:500;cursor:pointer; }
 
-/* ════ STATS ════ */
-.sbar { display:flex;padding:12px 14px;gap:8px;overflow-x:auto;scrollbar-width:none;background:#fff;border-bottom:1px solid var(--bdr); }
+/* Stats row sits inside the navy block */
+.sbar {
+  display:flex;padding:0 0 14px;gap:8px;
+  overflow-x:auto;scrollbar-width:none;
+  position:relative;
+}
 .sbar::-webkit-scrollbar{display:none}
-.sc { border-radius:var(--rs);padding:10px 14px;min-width:100px;flex-shrink:0;border:1px solid var(--bdr); }
-.sc.s-b{background:var(--blue-lt);border-color:#c7d7f8}
-.sc.s-a{background:var(--amb-lt);border-color:#fde68a}
-.sc.s-r{background:var(--red-lt);border-color:#fecaca}
-.sc.s-g{background:var(--grn-lt);border-color:#bbf7d0}
-.sl { font-size:10px;color:var(--txt2);font-weight:600;letter-spacing:.5px;text-transform:uppercase; }
-.sv { font-size:18px;font-weight:700;margin-top:3px;color:var(--txt); }
-.sv.cb{color:var(--blue)} .sv.ca{color:var(--amber)} .sv.cr{color:var(--red)} .sv.cg{color:var(--green)}
+.sc {
+  border-radius:var(--rs);padding:10px 14px;
+  min-width:100px;flex-shrink:0;
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.15);
+  backdrop-filter:blur(4px);
+}
+.sl { font-size:10px;color:rgba(255,255,255,.6);font-weight:600;letter-spacing:.5px;text-transform:uppercase; }
+.sv { font-size:18px;font-weight:700;margin-top:3px;color:#fff; }
+/* colour accents on the numbers */
+.sv.cb{color:#93c5fd} .sv.ca{color:#fcd34d} .sv.cr{color:#fca5a5} .sv.cg{color:#86efac}
 
 /* ════ SEARCH ════ */
-.ssec { padding:12px 14px 8px;background:#fff;border-bottom:1px solid var(--bdr); }
+.ssec { padding:12px 14px 8px;background:#fff;border-bottom:1px solid var(--bdr);box-shadow:0 2px 8px rgba(15,34,80,.08); }
 .srow { display:flex;gap:8px;margin-bottom:8px; }
 .swrap { position:relative;flex:1; }
 .sico { position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--txt3);pointer-events:none; }
@@ -183,14 +260,59 @@ body {
 <div id="loadOv"><div class="spin"></div><div id="loadTxt">Starting Kuber…</div></div>
 <div id="toast"></div>
 <div id="offlineBanner">📶 Offline — showing last saved data</div>
-<div id="installBanner">
-  <img src="icon-192.png" style="width:38px;height:38px;border-radius:9px;flex-shrink:0;">
-  <div style="flex:1">
-    <div style="font-size:13px;font-weight:700;color:var(--txt);">Add Kuber to Home Screen</div>
-    <div style="font-size:11px;color:var(--txt2);margin-top:1px;">Works offline · One-tap access</div>
+
+<!-- INSTALL WALL — shown if not installed on home screen -->
+<div id="installWall" style="display:none;">
+  <div class="iw-icon">🪙</div>
+  <div class="iw-name">Kuber</div>
+  <div class="iw-sub">by Ishwar Pharma · Collections</div>
+
+  <!-- Android: one-tap install button -->
+  <div id="iwAndroid" style="display:none;width:100%;max-width:340px;">
+    <div class="iw-card">
+      <div class="iw-card-title">📲 Install Required</div>
+      <div style="font-size:14px;color:#e2e8f0;line-height:1.6;">
+        This app must be installed on your home screen before use. Tap the button below to install.
+      </div>
+    </div>
+    <button class="iw-install-btn" id="iwAndroidBtn">Install Kuber on Home Screen</button>
+    <div class="iw-note">After installing, open Kuber from your home screen icon to continue.</div>
   </div>
-  <button class="ibtn-i" id="installBtn">Install</button>
-  <button class="ibtn-x" onclick="document.getElementById('installBanner').style.display='none'">×</button>
+
+  <!-- iOS: manual instructions -->
+  <div id="iwIos" style="display:none;width:100%;max-width:340px;">
+    <div class="iw-card">
+      <div class="iw-card-title">📲 Install Required — Follow These Steps</div>
+      <div class="iw-step">
+        <div class="iw-step-num">1</div>
+        <div class="iw-step-txt">Tap the <span>Share button ⬆</span> at the bottom of your Safari browser</div>
+      </div>
+      <div class="iw-step">
+        <div class="iw-step-num">2</div>
+        <div class="iw-step-txt">Scroll down and tap <span>"Add to Home Screen"</span></div>
+      </div>
+      <div class="iw-step">
+        <div class="iw-step-num">3</div>
+        <div class="iw-step-txt">Tap <span>"Add"</span> in the top right corner</div>
+      </div>
+      <div class="iw-step">
+        <div class="iw-step-num">4</div>
+        <div class="iw-step-txt">Open <span>Kuber</span> from your home screen to continue</div>
+      </div>
+    </div>
+    <div class="iw-note">⚠ Must be opened in Safari. If using Chrome on iPhone, copy the link and open in Safari first.</div>
+  </div>
+
+  <!-- Fallback for other browsers -->
+  <div id="iwOther" style="display:none;width:100%;max-width:340px;">
+    <div class="iw-card">
+      <div class="iw-card-title">📲 Install Required</div>
+      <div style="font-size:14px;color:#e2e8f0;line-height:1.6;">
+        Please open this link in <strong style="color:#fff;">Chrome (Android)</strong> or <strong style="color:#fff;">Safari (iPhone)</strong> and install the app to your home screen before use.
+      </div>
+    </div>
+    <div class="iw-note">Contact your manager if you need help installing.</div>
+  </div>
 </div>
 
 <!-- LOGIN -->
@@ -223,14 +345,16 @@ body {
 <!-- DASHBOARD -->
 <div class="screen" id="dashScreen">
   <div class="topbar">
-    <div class="tlogo">🪙 Kuber</div>
-    <div class="tuser" id="tuser"></div>
-  </div>
-  <div class="sbar">
-    <div class="sc s-b"><div class="sl">Parties</div><div class="sv cb" id="stP">—</div></div>
-    <div class="sc s-a"><div class="sl">Total O/S</div><div class="sv ca" id="stT">—</div></div>
-    <div class="sc s-r"><div class="sl">Overdue</div><div class="sv cr" id="stO">—</div></div>
-    <div class="sc s-g"><div class="sl">Bills</div><div class="sv cg" id="stB">—</div></div>
+    <div class="tbar-top">
+      <div class="tlogo">🪙 Kuber</div>
+      <div class="tuser" id="tuser"></div>
+    </div>
+    <div class="sbar">
+      <div class="sc"><div class="sl">Parties</div><div class="sv cb" id="stP">—</div></div>
+      <div class="sc"><div class="sl">Total O/S</div><div class="sv ca" id="stT">—</div></div>
+      <div class="sc"><div class="sl">Overdue</div><div class="sv cr" id="stO">—</div></div>
+      <div class="sc"><div class="sl">Bills</div><div class="sv cg" id="stB">—</div></div>
+    </div>
   </div>
   <div class="ssec">
     <div class="srow">
@@ -276,8 +400,21 @@ const show  = id => { document.querySelectorAll('.screen').forEach(s=>s.classLis
 const loading=(on,txt)=>{ document.getElementById('loadOv').style.display=on?'flex':'none'; if(txt)document.getElementById('loadTxt').textContent=txt; };
 
 /* ── BOOT ── */
+const isStandalone = () =>
+  window.matchMedia('(display-mode: standalone)').matches ||
+  window.navigator.standalone === true;
+
 window.onload = async () => {
   loading(true,'Starting Kuber…');
+
+  /* ── INSTALL GATE: block access if not installed on home screen ── */
+  if (!isStandalone()) {
+    loading(false);
+    showInstallWall();
+    return;
+  }
+
+  /* ── Already installed — proceed normally ── */
   try {
     const r = await fetch(BASE+'users.json');
     if(!r.ok) throw 0;
@@ -294,6 +431,19 @@ window.onload = async () => {
   }
   loading(false); show('loginScreen');
 };
+
+function showInstallWall() {
+  document.getElementById('installWall').style.display = 'flex';
+  const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isAndroid = /android/i.test(navigator.userAgent);
+  if (isIos) {
+    document.getElementById('iwIos').style.display = 'block';
+  } else if (isAndroid) {
+    document.getElementById('iwAndroid').style.display = 'block';
+  } else {
+    document.getElementById('iwOther').style.display = 'block';
+  }
+}
 
 /* ── PIN ── */
 function kp(d){
@@ -613,22 +763,42 @@ window.addEventListener('online', ()=>document.getElementById('offlineBanner').s
 window.addEventListener('offline',()=>document.getElementById('offlineBanner').style.display='block');
 if(!navigator.onLine)document.getElementById('offlineBanner').style.display='block';
 
-/* ── PWA INSTALL ── */
-let deferredPrompt=null;
-window.addEventListener('beforeinstallprompt',e=>{
-  e.preventDefault(); deferredPrompt=e;
-  setTimeout(()=>{if(!window.matchMedia('(display-mode: standalone)').matches)document.getElementById('installBanner').style.display='flex';},4000);
+/* ── ANDROID INSTALL PROMPT ── */
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  /* If install wall is showing, activate the Install button */
+  const btn = document.getElementById('iwAndroidBtn');
+  if (btn) btn.onclick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    if (outcome === 'accepted') {
+      /* User accepted — they will relaunch from home screen, wall will be gone */
+      document.getElementById('installWall').innerHTML =
+        '<div style="color:#fff;text-align:center;padding:40px 24px;">' +
+        '<div style="font-size:48px;margin-bottom:16px;">✅</div>' +
+        '<div style="font-size:20px;font-weight:700;margin-bottom:8px;">Kuber Installed!</div>' +
+        '<div style="font-size:14px;color:#94a3b8;line-height:1.6;">Now open Kuber from your home screen icon to continue.</div>' +
+        '</div>';
+    }
+  };
 });
-document.getElementById('installBtn').addEventListener('click',async()=>{
-  if(!deferredPrompt)return;
-  deferredPrompt.prompt();
-  const{outcome}=await deferredPrompt.userChoice;
-  if(outcome==='accepted')showToast('Kuber installed! 🪙');
-  document.getElementById('installBanner').style.display='none';
-  deferredPrompt=null;
+
+/* Fired when app is successfully installed — update the wall message */
+window.addEventListener('appinstalled', () => {
+  const wall = document.getElementById('installWall');
+  if (wall && wall.style.display !== 'none') {
+    wall.innerHTML =
+      '<div style="color:#fff;text-align:center;padding:40px 24px;">' +
+      '<div style="font-size:48px;margin-bottom:16px;">✅</div>' +
+      '<div style="font-size:20px;font-weight:700;margin-bottom:8px;">Kuber Installed!</div>' +
+      '<div style="font-size:14px;color:#94a3b8;line-height:1.6;">Now open Kuber from your home screen icon to continue.</div>' +
+      '</div>';
+  }
 });
-if(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone)
-  document.getElementById('installBanner').style.display='none';
 </script>
 </body>
 </html>
