@@ -582,11 +582,6 @@ function buildList(){
     const o=document.createElement('option');o.value=a;o.textContent=a;aEl.appendChild(o);
   });
 
-  document.getElementById('stP').textContent=allParties.length;
-  document.getElementById('stT').textContent='₹'+fmt(allParties.reduce((s,p)=>s+p.total,0));
-  document.getElementById('stO').textContent='₹'+fmt(allParties.reduce((s,p)=>s+p.overdue,0));
-  document.getElementById('stB').textContent=allParties.reduce((s,p)=>s+p.bills.length,0);
-
   const aLabel=isAll?'All Areas':myAreas.length===1?myAreas[0]:myAreas.length+' Areas';
   document.getElementById('tuser').textContent=ME.name+' · '+aLabel;
   doFilter();
@@ -623,6 +618,13 @@ function doFilter(){
 
 function render(){
   const list=document.getElementById('plist');
+
+  /* ── Stats always reflect exactly what is on screen ── */
+  document.getElementById('stP').textContent=filtered.length;
+  document.getElementById('stT').textContent='₹'+fmt(filtered.reduce((s,p)=>s+p.total,0));
+  document.getElementById('stO').textContent='₹'+fmt(filtered.reduce((s,p)=>s+p.overdue,0));
+  document.getElementById('stB').textContent=filtered.reduce((s,p)=>s+p.bills.length,0);
+
   document.getElementById('rinfo').textContent=filtered.length+' parties · ₹'+fmt(filtered.reduce((s,p)=>s+p.total,0))+' outstanding';
   if(!filtered.length){
     list.innerHTML='<div class="empty"><div class="ico">🔍</div><p>No parties found</p><small>Try a different search or area filter</small></div>';
