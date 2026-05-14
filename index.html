@@ -518,7 +518,9 @@ function parsePM(txt){
     if(mob.toUpperCase().includes('E+')) mob=Math.round(parseFloat(mob)).toString();
     mob=mob.replace(/[^0-9]/g,'');
     if(mob==='0'||mob.length<10) mob='';
-    partyMst[name]={addr1:c[iA1]?.trim()||'',addr2:c[iA2]?.trim()||'',addr3:c[iA3]?.trim()||'',mobile:mob,area:c[iArea]?.trim()||'',contact:c[iContact]?.trim()||''};
+    const rawContact = c[iContact]?.trim() || '';
+    const cleanContact = rawContact.replace(/\\/g,'').replace(/[\r\n]/g,'').trim();
+    partyMst[name]={addr1:c[iA1]?.trim()||'',addr2:c[iA2]?.trim()||'',addr3:c[iA3]?.trim()||'',mobile:mob,area:c[iArea]?.trim()||'',contact:cleanContact};
   }
 }
 
@@ -700,11 +702,12 @@ function showDetail(name){
   document.getElementById('dname').textContent=name;
   document.getElementById('dtag').textContent='📍 '+(p.area||'—');
   const addrHtml=[p.addr1,p.addr2,p.addr3].filter(Boolean).map(a=>`<div>${a}</div>`).join('')||'<div style="color:var(--txt3)">Address not available</div>';
-  const contactHtml=p.contact?`<div style="display:flex;align-items:center;gap:8px;margin-top:10px;padding:8px 10px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;">
+  const safeContact = p.contact ? p.contact.replace(/\\/g,'').replace(/'/g,'\u2019').replace(/"/g,'\u201d').trim() : '';
+  const contactHtml=safeContact?`<div style="display:flex;align-items:center;gap:8px;margin-top:10px;padding:8px 10px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;">
     <span style="font-size:16px;">👤</span>
     <div>
       <div style="font-size:10px;color:var(--txt3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Contact Person</div>
-      <div style="font-size:14px;font-weight:600;color:var(--txt);margin-top:1px;">${p.contact}</div>
+      <div style="font-size:14px;font-weight:600;color:var(--txt);margin-top:1px;">${safeContact}</div>
     </div>
   </div>`:'';
   const callHtml=p.mobile?`<a class="clink" href="tel:${p.mobile}"><span class="cico">📞</span>${p.mobile}<span style="margin-left:auto;color:var(--green);font-size:12px;font-weight:600">Tap to Call ›</span></a>`:'<div style="color:var(--txt3);font-size:13px;margin-top:8px">No mobile number on file</div>';
@@ -774,7 +777,8 @@ function buildWALink(name, p, l, bs, overdueLabel, creditLabel, credit){
   const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const todayStr = today.getDate()+'-'+monthNames[today.getMonth()]+'-'+today.getFullYear();
 
-  const contactLine = p.contact ? `Dear *${p.contact}*,` : 'Dear Sir/Madam,';
+  const safeContactWA = p.contact ? p.contact.replace(/\\/g,'').replace(/'/g,'\u2019').trim() : '';
+  const contactLine = safeContactWA ? `Dear *${safeContactWA}*,` : 'Dear Sir/Madam,';
   const pendingBills = bs.filter(b => b.balance > 0);
   const phone = '91' + p.mobile;
 
