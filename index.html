@@ -691,9 +691,11 @@ function getCutoffLabels(){
 }
 
 function showDetail(name){
+  try {
   const p=partyMst[name]||{}, l=ledger[name]||{total:0,overdue:0};
   const bs=(outstanding[name]||[]).sort((a,b)=>b.days-a.days);
   const { cutoffDate, overdueLabel, creditLabel } = getCutoffLabels();
+  const credit=Math.max(0,l.total-l.overdue);  // defined FIRST — used everywhere below
 
   document.getElementById('dname').textContent=name;
   document.getElementById('dtag').textContent='📍 '+(p.area||'—');
@@ -709,7 +711,7 @@ function showDetail(name){
 
   const pendingCount = bs.filter(b=>b.balance>0).length;
   const totalParts = Math.ceil(pendingCount / 20) || 1;
-  const waLink = buildWALink(name, p, l, bs, overdueLabel, creditLabel, credit);
+  const waLink = p.mobile ? buildWALink(name, p, l, bs, overdueLabel, creditLabel, credit) : '';
 
   const waHtml = p.mobile ? `
     <a class="wa-btn" id="waBtnMain" href="${waLink}" target="_blank"
@@ -721,9 +723,8 @@ function showDetail(name){
       </div>
       <span style="font-size:13px;font-weight:600;">›</span>
     </a>
-    <div id="waNextBtns" style="display:none;margin-top:6px;display:none;flex-direction:column;gap:6px;"></div>
+    <div id="waNextBtns" style="display:none;margin-top:6px;flex-direction:column;gap:6px;"></div>
   ` : '';
-  const credit=Math.max(0,l.total-l.overdue);
 
   /* Bill card colour: red = billed on/before cutoff date, green = after */
   const billsHtml=bs.map(b=>{
@@ -760,6 +761,10 @@ function showDetail(name){
     </div>
     ${bs.length?billsHtml:'<div class="empty"><div class="ico">✅</div><p>No outstanding bills</p></div>'}`;
   show('detailScreen');
+  } catch(err) {
+    showToast('Error loading party details — ' + err.message);
+    console.error('showDetail error:', err);
+  }
 }
 function goBack(){ show('dashScreen'); }
 
