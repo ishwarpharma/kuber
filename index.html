@@ -231,6 +231,13 @@ body {
 .atxt  { font-size:14px;color:var(--txt2);line-height:1.7; }
 .clink { display:flex;align-items:center;gap:10px;background:var(--grn-lt);border:1px solid #bbf7d0;border-radius:var(--rs);padding:10px 12px;margin-top:10px;text-decoration:none;color:var(--txt);font-size:14px;font-weight:500; }
 .cico  { background:var(--green);border-radius:6px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0; }
+.wa-btn {
+  display:flex;align-items:center;gap:10px;
+  background:#25d366;
+  border-radius:var(--rs);padding:11px 13px;margin-top:8px;
+  text-decoration:none;color:#fff;
+  box-shadow:0 2px 8px rgba(37,211,102,.3);
+}
 .sgrid { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
 .stile { background:#fff;border:1px solid var(--bdr);border-radius:var(--rs);padding:12px; }
 .stile .lbl{font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
@@ -501,7 +508,8 @@ function parsePM(txt){
   const lines=txt.split('\n'); if(!lines.length)return;
   const hdr=csvLine(lines[0]).map(h=>h.toLowerCase().replace(/[\r\s]/g,''));
   const iN=hdr.indexOf('ledger'), iA1=hdr.indexOf('address1'), iA2=hdr.indexOf('address2'),
-        iA3=hdr.indexOf('address3'), iMob=hdr.indexOf('mobile'), iArea=hdr.indexOf('area');
+        iA3=hdr.indexOf('address3'), iMob=hdr.indexOf('mobile'), iArea=hdr.indexOf('area'),
+        iContact=hdr.indexOf('contact');
   for(let i=1;i<lines.length;i++){
     const c=csvLine(lines[i]);
     const name=c[iN]?.trim().replace(/\r/g,''); if(!name)continue;
@@ -510,7 +518,7 @@ function parsePM(txt){
     if(mob.toUpperCase().includes('E+')) mob=Math.round(parseFloat(mob)).toString();
     mob=mob.replace(/[^0-9]/g,'');
     if(mob==='0'||mob.length<10) mob='';
-    partyMst[name]={addr1:c[iA1]?.trim()||'',addr2:c[iA2]?.trim()||'',addr3:c[iA3]?.trim()||'',mobile:mob,area:c[iArea]?.trim()||''};
+    partyMst[name]={addr1:c[iA1]?.trim()||'',addr2:c[iA2]?.trim()||'',addr3:c[iA3]?.trim()||'',mobile:mob,area:c[iArea]?.trim()||'',contact:c[iContact]?.trim()||''};
   }
 }
 
@@ -690,7 +698,31 @@ function showDetail(name){
   document.getElementById('dname').textContent=name;
   document.getElementById('dtag').textContent='📍 '+(p.area||'—');
   const addrHtml=[p.addr1,p.addr2,p.addr3].filter(Boolean).map(a=>`<div>${a}</div>`).join('')||'<div style="color:var(--txt3)">Address not available</div>';
+  const contactHtml=p.contact?`<div style="display:flex;align-items:center;gap:8px;margin-top:10px;padding:8px 10px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;">
+    <span style="font-size:16px;">👤</span>
+    <div>
+      <div style="font-size:10px;color:var(--txt3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Contact Person</div>
+      <div style="font-size:14px;font-weight:600;color:var(--txt);margin-top:1px;">${p.contact}</div>
+    </div>
+  </div>`:'';
   const callHtml=p.mobile?`<a class="clink" href="tel:${p.mobile}"><span class="cico">📞</span>${p.mobile}<span style="margin-left:auto;color:var(--green);font-size:12px;font-weight:600">Tap to Call ›</span></a>`:'<div style="color:var(--txt3);font-size:13px;margin-top:8px">No mobile number on file</div>';
+
+  const pendingCount = bs.filter(b=>b.balance>0).length;
+  const totalParts = Math.ceil(pendingCount / 20) || 1;
+  const waLink = buildWALink(name, p, l, bs, overdueLabel, creditLabel, credit);
+
+  const waHtml = p.mobile ? `
+    <a class="wa-btn" id="waBtnMain" href="${waLink}" target="_blank"
+       onclick="setTimeout(showWANextBtns, 2000)">
+      <span style="font-size:18px;">💬</span>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;">Send Outstanding on WhatsApp</div>
+        <div style="font-size:11px;opacity:.8;margin-top:1px;">${pendingCount} bills${totalParts>1?' · Will split into '+totalParts+' messages':''}</div>
+      </div>
+      <span style="font-size:13px;font-weight:600;">›</span>
+    </a>
+    <div id="waNextBtns" style="display:none;margin-top:6px;display:none;flex-direction:column;gap:6px;"></div>
+  ` : '';
   const credit=Math.max(0,l.total-l.overdue);
 
   /* Bill card colour: red = billed on/before cutoff date, green = after */
@@ -714,7 +746,7 @@ function showDetail(name){
   }).join('');
 
   document.getElementById('dbody').innerHTML=`
-    <div class="icard"><div class="itit">📍 Address & Contact</div><div class="atxt">${addrHtml}</div>${callHtml}</div>
+    <div class="icard"><div class="itit">📍 Address & Contact</div><div class="atxt">${addrHtml}</div>${contactHtml}${callHtml}${waHtml}</div>
     <div class="sgrid">
       <div class="stile"><div class="lbl">Total O/S</div><div class="val">₹${ff(l.total)}</div></div>
       <div class="stile tile-r"><div class="lbl">Overdue — ${overdueLabel}</div><div class="val">₹${ff(l.overdue)}</div></div>
@@ -731,6 +763,82 @@ function showDetail(name){
 }
 function goBack(){ show('dashScreen'); }
 
+/* ── WhatsApp message builder ── */
+function buildWALink(name, p, l, bs, overdueLabel, creditLabel, credit){
+  const today = new Date();
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const todayStr = today.getDate()+'-'+monthNames[today.getMonth()]+'-'+today.getFullYear();
+
+  const contactLine = p.contact ? `Dear *${p.contact}*,` : 'Dear Sir/Madam,';
+  const pendingBills = bs.filter(b => b.balance > 0);
+  const phone = '91' + p.mobile;
+
+  /* ── Split bills into chunks of 20 per message ── */
+  const CHUNK = 20;
+  const totalMsgs = Math.ceil(pendingBills.length / CHUNK) || 1;
+
+  /* Build all message parts */
+  const messages = [];
+
+  for (let part = 0; part < totalMsgs; part++) {
+    const chunk = pendingBills.slice(part * CHUNK, (part + 1) * CHUNK);
+    const billLines = chunk.map(b =>
+      `  • ${b.billno}  |  ${b.date}  |  ₹${ff(b.balance)}`
+    ).join('\n');
+
+    const partTag = totalMsgs > 1 ? ` _(${part+1}/${totalMsgs})_` : '';
+
+    let msg = '';
+    if (part === 0) {
+      /* First message — full header + summary + first chunk of bills */
+      msg =
+`${contactLine}
+
+Greetings from *Ishwar Pharma*! 🙏
+
+Your outstanding as on *${todayStr}*:
+*${name}*
+
+💰 *Total O/S: ₹${ff(l.total)}*
+🔴 *Overdue (${overdueLabel}): ₹${ff(l.overdue)}*
+🟢 *${creditLabel}: ₹${ff(credit)}*
+
+📋 *Bill Details${partTag}:*
+  _Bill No  |  Date  |  Pending_
+${billLines}`;
+    } else {
+      /* Continuation messages — just bill rows */
+      msg =
+`*${name}*
+📋 *Bill Details${partTag}:*
+  _Bill No  |  Date  |  Pending_
+${billLines}`;
+    }
+
+    /* Last chunk — add footer */
+    if (part === totalMsgs - 1) {
+      msg += `
+
+Total Bills: *${pendingBills.length}*
+
+Kindly arrange payment at the earliest.
+Thank you 🙏 *Ishwar Pharma*`;
+    }
+
+    messages.push(msg);
+  }
+
+  /* Open first message. If multiple parts, store rest in sessionStorage
+     and open them sequentially via the WA button click handler */
+  if (messages.length > 1) {
+    sessionStorage.setItem('wa_queue', JSON.stringify({ phone, msgs: messages, idx: 1 }));
+  } else {
+    sessionStorage.removeItem('wa_queue');
+  }
+
+  return 'https://wa.me/' + phone + '?text=' + encodeURIComponent(messages[0]);
+}
+
 /* Parse bill date string (dd-Mon-yy or dd-Mon-yyyy) into a Date object */
 function parseBillDate(ds){
   if(!ds) return null;
@@ -745,7 +853,35 @@ function parseBillDate(ds){
   return null;
 }
 
-/* ── Helpers ── */
+/* Show "Send Part 2 / Part 3" buttons after first WA message is opened */
+function showWANextBtns(){
+  try {
+    const raw = sessionStorage.getItem('wa_queue');
+    if (!raw) return;
+    const q = JSON.parse(raw);
+    const container = document.getElementById('waNextBtns');
+    if (!container) return;
+    container.innerHTML = '';
+    container.style.display = 'flex';
+
+    for (let i = q.idx; i < q.msgs.length; i++) {
+      const partNum = i + 1;
+      const link = 'https://wa.me/' + q.phone + '?text=' + encodeURIComponent(q.msgs[i]);
+      const btn = document.createElement('a');
+      btn.href = link;
+      btn.target = '_blank';
+      btn.className = 'wa-btn';
+      btn.style.background = '#128c7e';
+      btn.innerHTML = `<span style="font-size:18px;">💬</span>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:700;">Send Part ${partNum} of ${q.msgs.length}</div>
+          <div style="font-size:11px;opacity:.8;margin-top:1px;">Tap after Part ${partNum-1} is sent</div>
+        </div>
+        <span style="font-size:13px;font-weight:600;">›</span>`;
+      container.appendChild(btn);
+    }
+  } catch(e){}
+}
 function fmt(n){
   if(n>=10000000)return(n/10000000).toFixed(1)+' Cr';
   if(n>=100000)  return(n/100000).toFixed(1)+' L';
