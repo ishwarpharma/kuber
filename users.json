@@ -130,6 +130,44 @@
     ],
     "salesman": "ALL"
   },
+
+  {
+    "name": "Swapnali",
+    "pin": "519437",
+    "areas": "ALL",
+    "salesman": "1SWAPNALI (MIS)"
+  },
+  
+  {
+    "name": "Kranti",
+    "pin": "150519",
+    "areas": "ALL",
+    "salesman": "1KRANTI (MIS)"
+  },
+  
+   {
+    "name": "Narendra",
+    "pin": "150521",
+    "areas": "ALL",
+    "salesman": "1NARENDRA (MIS)"
+  },
+  
+   {
+    "name": "Payal",
+    "pin": "150522",
+    "areas": "ALL",
+    "salesman": "1PAYAL (MIS)"
+  },
+  
+ {
+    "name": "Archana",
+    "pin": "150523",
+    "areas": "ALL",
+    "salesman": "1ARCHANA (MIS)"
+  },
+
+
+  
   {
     "name": "Shubahngi Kadam",
     "pin": "482731",
