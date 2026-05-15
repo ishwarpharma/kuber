@@ -117,18 +117,12 @@
     ],
     "salesman": "ALL"
   },
+
   {
-    "name": "Umesh Chauhan",
+    "name": "Alkem Umesh",
     "pin": "839420",
-    "areas": [
-      "DHULE",
-      "JALGAON",
-      "JALNA",
-      "NANDURBAR",
-      "NASHIK",
-      "SAMBHAJINAGAR"
-    ],
-    "salesman": "ALL"
+    "areas": "ALL",
+    "salesman": "ALKEM UMESH (MIS)"
   },
 
   {
