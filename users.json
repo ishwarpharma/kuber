@@ -2,91 +2,168 @@
   {
     "name": "Pandit Lingade",
     "pin": "590812",
-    "areas": ["NANDED", "BEED", "LATUR", "OSMANABAD", "SAMBHAJINAGAR", "JALNA", "PARBHANI"]
+    "areas": [
+      "NANDED",
+      "BEED",
+      "LATUR",
+      "OSMANABAD",
+      "SAMBHAJINAGAR",
+      "JALNA",
+      "PARBHANI"
+    ],
+    "salesman": "ALL"
   },
   {
     "name": "Pravin Pawar",
     "pin": "604913",
-    "areas": ["SANGLI", "SATARA", "SOLAPUR", "KOLHAPUR", "KOKAN", "GOA"]
+    "areas": [
+      "SANGLI",
+      "SATARA",
+      "SOLAPUR",
+      "KOLHAPUR",
+      "KOKAN",
+      "GOA"
+    ],
+    "salesman": "ALL"
   },
- 
   {
     "name": "Rajendra Sakpal",
     "pin": "728145",
-    "areas": ["SANGLI", "SATARA", "SOLAPUR", "KOLHAPUR", "KOKAN", "GOA", "PUNE", "AHILYANAGAR", "NASHIK", "SAMBHAJINAGAR"]
+    "areas": [
+      "SANGLI",
+      "SATARA",
+      "SOLAPUR",
+      "KOLHAPUR",
+      "KOKAN",
+      "GOA",
+      "PUNE",
+      "AHILYANAGAR",
+      "NASHIK",
+      "SAMBHAJINAGAR"
+    ],
+    "salesman": "ALL"
   },
-
   {
     "name": "Vinayak Surya",
     "pin": "251768",
-    "areas": ["SANGLI", "SATARA", "SOLAPUR", "KOLHAPUR", "PUNE", "AHILYANAGAR"]
+    "areas": [
+      "SANGLI",
+      "SATARA",
+      "SOLAPUR",
+      "KOLHAPUR",
+      "PUNE",
+      "AHILYANAGAR"
+    ],
+    "salesman": "ALL"
   },
-  
-{
+  {
     "name": "Yogesh Singh",
     "pin": "731594",
-    "areas": ["11-DA-KUR-BAN", "12-SAN-AND-SAK", "13-JOGES-BORIVA", "14-DAHIS-BHAYE", "15-VASAI-DAHAN"]
+    "areas": [
+      "11-DA-KUR-BAN",
+      "12-SAN-AND-SAK",
+      "13-JOGES-BORIVA",
+      "14-DAHIS-BHAYE",
+      "15-VASAI-DAHAN"
+    ],
+    "salesman": "ALL"
   },
-
-{
+  {
     "name": "Vinay Lakhade",
     "pin": "817340",
-    "areas": ["NAGPUR", "GONDIA", "AKOLA", "AMRAVATI", "BHANDARA", "BULDHANA", "CHANDRAPUR", "GADCHIROLI", "WARDHA", "WASHIM", "YAVATMAL"]
+    "areas": [
+      "NAGPUR",
+      "GONDIA",
+      "AKOLA",
+      "AMRAVATI",
+      "BHANDARA",
+      "BULDHANA",
+      "CHANDRAPUR",
+      "GADCHIROLI",
+      "WARDHA",
+      "WASHIM",
+      "YAVATMAL"
+    ],
+    "salesman": "ALL"
   },
-
-{
+  {
     "name": "Arvind Badole",
     "pin": "176354",
-    "areas": ["NAGPUR", "GONDIA", "AKOLA", "AMRAVATI", "BHANDARA", "BULDHANA", "CHANDRAPUR", "GADCHIROLI", "WARDHA", "WASHIM", "YAVATMAL"]
+    "areas": [
+      "NAGPUR",
+      "GONDIA",
+      "AKOLA",
+      "AMRAVATI",
+      "BHANDARA",
+      "BULDHANA",
+      "CHANDRAPUR",
+      "GADCHIROLI",
+      "WARDHA",
+      "WASHIM",
+      "YAVATMAL"
+    ],
+    "salesman": "ALL"
   },
-
-
-  
-{
+  {
     "name": "Rohit Chalke",
     "pin": "957183",
-    "areas": ["DHULE", "JALGAON", "JALNA", "NANDURBAR", "NASHIK", "SAMBHAJINAGAR"]
+    "areas": [
+      "DHULE",
+      "JALGAON",
+      "JALNA",
+      "NANDURBAR",
+      "NASHIK",
+      "SAMBHAJINAGAR"
+    ],
+    "salesman": "ALL"
   },
-
-{
+  {
     "name": "Umesh Chauhan",
     "pin": "839420",
-    "areas": ["DHULE", "JALGAON", "JALNA", "NANDURBAR", "NASHIK", "SAMBHAJINAGAR"]
+    "areas": [
+      "DHULE",
+      "JALGAON",
+      "JALNA",
+      "NANDURBAR",
+      "NASHIK",
+      "SAMBHAJINAGAR"
+    ],
+    "salesman": "ALL"
   },
-  
   {
     "name": "Shubahngi Kadam",
     "pin": "482731",
-    "areas": "ALL"
+    "areas": "ALL",
+    "salesman": "ALL"
   },
-
-{
+  {
     "name": "Sushma Pawar",
     "pin": "205871",
-    "areas": "ALL"
+    "areas": "ALL",
+    "salesman": "ALL"
   },
-
-{
+  {
     "name": "Durga Kamble",
     "pin": "864302",
-    "areas": "ALL"
+    "areas": "ALL",
+    "salesman": "ALL"
   },
-  
-{
+  {
     "name": "Vaishnavi Jogale",
     "pin": "684159",
-    "areas": "ALL"
+    "areas": "ALL",
+    "salesman": "ALL"
   },
-
-   {
+  {
     "name": "Apurva Shah",
     "pin": "443927",
-    "areas": "ALL"
+    "areas": "ALL",
+    "salesman": "ALL"
   },
-  
   {
     "name": "Brijesh Shah",
     "pin": "443501",
-    "areas": "ALL"
+    "areas": "ALL",
+    "salesman": "ALL"
   }
 ]
