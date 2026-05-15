@@ -43,19 +43,7 @@
     ],
     "salesman": "ALL"
   },
-  {
-    "name": "Vinayak Surya",
-    "pin": "251768",
-    "areas": [
-      "SANGLI",
-      "SATARA",
-      "SOLAPUR",
-      "KOLHAPUR",
-      "PUNE",
-      "AHILYANAGAR"
-    ],
-    "salesman": "ALL"
-  },
+  
   {
     "name": "Yogesh Singh",
     "pin": "731594",
@@ -132,7 +120,14 @@
     "salesman": "ALKEM ROSHAN (MIS)"
   },
   
-   
+{
+    "name": "Cadila Vinayak",
+    "pin": "251768",
+    "areas": "ALL",
+    "salesman": "CADILA VINAYAK SURYA (MIS)"
+  },
+
+  
   
   {
     "name": "Swapnali",
