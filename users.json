@@ -133,7 +133,20 @@
     "areas": "ALL",
     "salesman": "THEON VIJAY PATIL (MIS)"
   },
-  
+
+{
+    "name": "Alkem Rajesh",
+    "pin": "367890",
+    "areas": "ALL",
+    "salesman": "ALKEM RAJESH (MIS)"
+  },
+
+  {
+    "name": "Alkem Prajjwal",
+    "pin": "692154",
+    "areas": "ALL",
+    "salesman": "ALKEM PRAJJWAL SINGH (MIS)"
+  },
   
   {
     "name": "Swapnali",
