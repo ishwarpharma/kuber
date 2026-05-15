@@ -169,23 +169,33 @@
 
   
   {
-    "name": "Shubahngi Kadam",
+    "name": "Shubahngi",
     "pin": "482731",
     "areas": "ALL",
     "salesman": "ALL"
   },
   {
-    "name": "Sushma Pawar",
+    "name": "Sushma",
     "pin": "205871",
     "areas": "ALL",
     "salesman": "ALL"
   },
   {
-    "name": "Durga Kamble",
+    "name": "Durga",
     "pin": "864302",
     "areas": "ALL",
     "salesman": "ALL"
   },
+ 
+    {
+    "name": "Anuja",
+    "pin": "150516",
+    "areas": "ALL",
+    "salesman": "ALL"
+  },
+  
+  
+  
   {
     "name": "Vaishnavi Jogale",
     "pin": "684159",
