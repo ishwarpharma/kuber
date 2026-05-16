@@ -398,6 +398,7 @@ const BASE = './';
 
 let USERS=[], ME=null;
 let partyMst={}, ledger={}, outstanding={};
+let salesMap={};        // salesman name → Set of party names
 let allParties=[], filtered=[], sortMode='os', pinBuf='';
 const TODAY = new Date();
 
@@ -481,8 +482,13 @@ async function loadData(){
   loading(true,'Loading data…');
   try {
     const bust='?t='+Date.now();
-    const [pmT,lsT,osT]=await Promise.all([fx('partymst.csv'+bust),fx('ledgersummary.csv'+bust),fx('outstanding.csv'+bust)]);
-    parsePM(pmT); parseLS(lsT); parseOS(osT);
+    const [pmT,lsT,osT,smT]=await Promise.all([
+      fx('partymst.csv'+bust),
+      fx('ledgersummary.csv'+bust),
+      fx('outstanding.csv'+bust),
+      fx('salesmap.csv'+bust)
+    ]);
+    parsePM(pmT); parseLS(lsT); parseOS(osT); parseSalesMap(smT);
   } catch(e) {
     showToast('Data load failed — check connection');
   }
@@ -561,6 +567,22 @@ function parseOS(txt){
 
 const pf=s=>{const n=parseFloat(String(s||'').replace(/,/g,''));return isNaN(n)?0:n;};
 
+/* ── PARSE salesmap.csv ── */
+/* Columns: Sales Men (col A), Party Name (col B) */
+function parseSalesMap(txt){
+  salesMap={};
+  const lines=txt.split('\n'); if(!lines.length)return;
+  /* skip header row */
+  for(let i=1;i<lines.length;i++){
+    const c=csvLine(lines[i]);
+    const salesman=c[0]?.trim().replace(/\r/g,'');
+    const party   =c[1]?.trim().replace(/\r/g,'');
+    if(!salesman||!party)continue;
+    if(!salesMap[salesman]) salesMap[salesman]=new Set();
+    salesMap[salesman].add(party);
+  }
+}
+
 function daysOld(ds){
   if(!ds)return 0;
   const months={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
@@ -577,11 +599,21 @@ function daysOld(ds){
 
 /* ── BUILD LIST ── */
 function buildList(){
-  const myAreas=ME.areas;
-  const isAll=myAreas==='ALL'||(Array.isArray(myAreas)&&myAreas.length===0);
+  const myAreas    = ME.areas;
+  const mySalesman = ME.salesman || 'ALL';   // new field — defaults to ALL if missing
+  const isAllAreas = myAreas    ==='ALL'||(Array.isArray(myAreas)&&myAreas.length===0);
+  const isAllSales = mySalesman ==='ALL';
+
+  /* Get the set of parties this salesman covers (if restricted) */
+  const salesParties = !isAllSales ? (salesMap[mySalesman] || new Set()) : null;
+
   allParties=Object.keys(partyMst)
     .filter(n=>{
-      if(!isAll&&!myAreas.includes(partyMst[n].area))return false;
+      /* Area gate */
+      if(!isAllAreas&&!myAreas.includes(partyMst[n].area)) return false;
+      /* Salesman gate — only show parties in their salesmap */
+      if(!isAllSales && !salesParties.has(n)) return false;
+      /* Must have outstanding */
       const l=ledger[n]; return l&&l.total>0;
     })
     .map(n=>({name:n,area:partyMst[n].area,total:ledger[n].total,overdue:ledger[n].overdue,bills:outstanding[n]||[]}));
@@ -592,8 +624,10 @@ function buildList(){
     const o=document.createElement('option');o.value=a;o.textContent=a;aEl.appendChild(o);
   });
 
-  const aLabel=isAll?'All Areas':myAreas.length===1?myAreas[0]:myAreas.length+' Areas';
-  document.getElementById('tuser').textContent=ME.name+' · '+aLabel;
+  /* User label — show salesman name if restricted */
+  let label = isAllAreas ? 'All Areas' : (Array.isArray(myAreas)&&myAreas.length===1?myAreas[0]:myAreas.length+' Areas');
+  if(!isAllSales) label = mySalesman.replace(' (MIS)','');
+  document.getElementById('tuser').textContent=ME.name+' · '+label;
   doFilter();
 }
 
@@ -903,8 +937,23 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 
 /* ── SERVICE WORKER ── */
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').catch(()=>{});});
-  navigator.serviceWorker.addEventListener('message',e=>{if(e.data?.type==='OFFLINE_MODE')document.getElementById('offlineBanner').style.display='block';});
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      /* Check for updates every time app is opened */
+      reg.update();
+    }).catch(()=>{});
+  });
+
+  navigator.serviceWorker.addEventListener('message', e => {
+    if (e.data?.type === 'OFFLINE_MODE') {
+      document.getElementById('offlineBanner').style.display = 'block';
+    }
+    if (e.data?.type === 'SW_UPDATED') {
+      /* New version of app is ready — reload silently.
+         PIN is in localStorage so user won't need to log in again. */
+      window.location.reload();
+    }
+  });
 }
 window.addEventListener('online', ()=>document.getElementById('offlineBanner').style.display='none');
 window.addEventListener('offline',()=>document.getElementById('offlineBanner').style.display='block');
