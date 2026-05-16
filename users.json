@@ -183,7 +183,12 @@
     "salesman": "1ARCHANA (MIS)"
   },
 
-
+{
+    "name": "Kanchan",
+    "pin": "160513",
+    "areas": "ALL",
+    "salesman": "1KANCHAN (MIS)"
+  },
   
   {
     "name": "Shubahngi",
