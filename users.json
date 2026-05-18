@@ -56,6 +56,25 @@
     ],
     "salesman": "ALL"
   },
+
+{
+    "name": "Shankar Bengade",
+    "pin": "180551",
+    "areas": [
+     "21-GHATK-MULUD",
+      "22-THANE",
+      "23-BHIWANDI",
+      "24-KLWA-DOMBIV",
+      "25-KLY-ULH-BADL",
+      "31-WADAL-MANKH",
+      "32-VASHI-PANVEL",
+      "33-TRANS HARB"
+    ],
+    "salesman": "ALL"
+  },
+  
+  
+  
   {
     "name": "Vinay Lakhade",
     "pin": "817340",
