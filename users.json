@@ -161,6 +161,22 @@
     "salesman": "ALKEM RAJESH (MIS)"
   },
 
+   {
+    "name": "Kemsyn Rakesh",
+    "pin": "010641",
+    "areas": [
+      "21-GHATK-MULUD",
+      "22-THANE",
+      "23-BHIWANDI",
+      "24-KLWA-DOMBIV",
+      "25-KLY-ULH-BADL",
+      "31-WADAL-MANKH",
+      "32-VASHI-PANVEL",
+      "33-TRANS HARB"
+    ],
+    "salesman": "ALL"
+  },
+  
   {
     "name": "Alkem Prajjwal",
     "pin": "692154",
