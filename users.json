@@ -112,6 +112,26 @@
     ],
     "salesman": "ALL"
   },
+
+  {
+    "name": "Amit Kemsyn",
+    "pin": "030726",
+    "areas": [
+      "NAGPUR",
+      "GONDIA",
+      "AKOLA",
+      "AMRAVATI",
+      "BHANDARA",
+      "BULDHANA",
+      "CHANDRAPUR",
+      "GADCHIROLI",
+      "WARDHA",
+      "WASHIM",
+      "YAVATMAL"
+    ],
+    "salesman": "ALL"
+  },
+  
   {
     "name": "Rohit Chalke",
     "pin": "957183",
